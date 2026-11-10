@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GLASS CORONATION: Titik Beku di Bawah Menara Gading</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #07090e;
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --border-titanium: rgba(226, 232, 240, 0.18);
+      --border-cyan: rgba(125, 211, 252, 0.4);
+      --accent-cyan: #38bdf8;
+      --accent-cold: #7dd3fc;
+      --accent-ruby: #f43f5e;
+      --accent-amber: #fbbf24;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+    .font-serif-title {
+      font-family: 'Cinzel', Georgia, serif;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Frosted Glass Classes */
+    .glass-panel {
+      background: rgba(11, 15, 25, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-titanium);
+    }
+    .glass-panel-glow {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-cyan);
+      box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.15);
+    }
+    .glass-drawer {
+      background: rgba(7, 10, 18, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-left: 1px solid rgba(125, 211, 252, 0.25);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(125, 211, 252, 0.3);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(125, 211, 252, 0.6);
+    }
+
+    /* Animations */
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(1000%); }
+    }
+    @keyframes thunderFlash {
+      0% { opacity: 0; }
+      15% { opacity: 0.85; }
+      20% { opacity: 0.2; }
+      30% { opacity: 0.95; }
+      100% { opacity: 0; }
+    }
+    @keyframes floatGentle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes glassShatterShake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-8px, 6px) rotate(-1deg); }
+      40% { transform: translate(8px, -6px) rotate(1.5deg); }
+      60% { transform: translate(-5px, 4px) rotate(-0.5deg); }
+      80% { transform: translate(4px, -2px) rotate(0.5deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    .animate-scanline {
+      animation: scanline 8s linear infinite;
+    }
+    .animate-pulse-slow {
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+    .shatter-shake {
+      animation: glassShatterShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    /* Frost Vignette */
+    #frostVignette {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 40;
+      transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      background: radial-gradient(circle at center, transparent 40%, rgba(186, 230, 253, 0.08) 70%, rgba(125, 211, 252, 0.35) 95%),
+                  repeating-radial-gradient(circle at 0% 0%, transparent 0, rgba(255,255,255,0.05) 20px, transparent 40px);
+      box-shadow: inset 0 0 100px rgba(56, 189, 248, 0.45), inset 0 0 180px rgba(186, 230, 253, 0.25);
+      border: 1px solid rgba(186, 230, 253, 0.3);
+    }
+
+    /* Lightning Overlay */
+    #lightningFlash {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 65% 25%, rgba(224, 242, 254, 0.95), rgba(186, 230, 253, 0.6) 40%, rgba(14, 165, 233, 0.1) 80%);
+      opacity: 0;
+      z-index: 15;
+    }
+
+    /* Character Sprite Styling */
+    .sprite-container {
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: bottom center;
+    }
+    .sprite-active {
+      filter: drop-shadow(0 0 24px rgba(56, 189, 248, 0.28)) brightness(1.05);
+      transform: scale(1.03) translateY(-6px);
+      opacity: 1;
+      z-index: 20;
+    }
+    .sprite-inactive {
+      filter: brightness(0.65) saturate(0.7) blur(0.5px);
+      transform: scale(0.97) translateY(4px);
+      opacity: 0.55;
+      z-index: 10;
+    }
+    .sprite-hidden {
+      opacity: 0;
+      transform: translateY(40px) scale(0.9);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="relative flex flex-col justify-between select-none">
+
+  <!-- BACKGROUND CANVAS (Rain on Glass + Ivory Tower Sky) -->
+  <canvas id="rainCanvas" class="absolute inset-0 w-full h-full z-0 block"></canvas>
+  <div id="lightningFlash"></div>
+  <div id="frostVignette" style="opacity: 0;"></div>
+
+  <!-- MAIN WRAPPER -->
+  <div id="gameContainer" class="relative z-20 flex flex-col h-full w-full justify-between overflow-hidden">
+
+    <!-- ==================== TOP BAR HUD (Psychological Thermometer) ==================== -->
+    <header id="topHud" class="w-full glass-panel border-b border-[var(--border-titanium)] px-4 py-2.5 flex items-center justify-between z-30 transition-all duration-300">
+      
+      <!-- Left: Title & Chapter Badge -->
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded border border-cyan-400/40 bg-cyan-950/40 flex items-center justify-center text-cyan-300 font-serif-title text-sm font-bold shadow-[0_0_12px_rgba(56,189,248,0.25)]">
+          GC
+        </div>
+        <div>
+          <h1 class="text-xs uppercase tracking-[0.25em] text-cyan-300 font-serif-title font-semibold">Glass Coronation</h1>
+          <p id="currentSceneBadge" class="text-[11px] text-slate-400 font-mono-code flex items-center gap-1.5">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+            <span id="sceneTitleText">Prolog: Bayangan di Balik Kaca</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Center: Dual-Axis Psychological Thermometer -->
+      <div class="hidden md:flex flex-col items-center w-7/12 max-w-xl mx-2">
+        <div class="w-full flex justify-between items-center text-[10px] uppercase font-mono-code mb-1 px-1">
+          <span class="text-cyan-300 font-semibold flex items-center gap-1">
+            <svg class="w-3 h-3 text-cyan-400 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Titik Beku (Coldness): <span id="coldnessVal" class="text-cyan-200">65%</span>
+          </span>
+          <span id="psycheStateLabel" class="text-slate-300 font-serif-title tracking-wider px-2 py-0.5 rounded bg-slate-900/60 border border-slate-700/50">
+            Kalkulasi Rasional
+          </span>
+          <span class="text-amber-300 font-semibold flex items-center gap-1">
+            Empati (Humanity): <span id="empathyVal" class="text-amber-200">35%</span>
+            <svg class="w-3 h-3 text-amber-400 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          </span>
+        </div>
+        <!-- Gradient Thermometer Track -->
+        <div class="w-full h-2 rounded-full bg-slate-900/90 border border-slate-700/70 relative overflow-hidden shadow-inner">
+          <div id="thermometerBar" class="h-full transition-all duration-700 ease-out bg-gradient-to-r from-cyan-400 via-sky-500 to-amber-500 relative" style="width: 65%;">
+            <div class="absolute right-0 top-0 bottom-0 w-1.5 bg-white shadow-[0_0_8px_#ffffff]"></div>
+          </div>
+        </div>
+        <!-- Secondary Micro-Stats (Authority & Resonance) -->
+        <div class="w-full flex justify-between text-[10px] text-slate-400 font-mono-code mt-1 px-1">
+          <span class="flex items-center gap-1">
+            <span class="text-slate-500">OTORITAS AUDIT:</span>
+            <span id="authorityVal" class="text-slate-200 font-bold">50%</span>
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-slate-500">RESONANSI SIGHT:</span>
+            <span id="resonanceVal" class="text-cyan-300 font-bold">40%</span>
+            <span id="sightActiveIndicator" class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-0.5" title="Micro-Expression Sight Aktif"></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Right: Action Buttons (Ledger, Backlog, Codex, Sound, Settings) -->
+      <div class="flex items-center space-x-2">
+        <!-- Leverage Ledger Button -->
+        <button id="btnOpenLedger" class="relative group px-3 py-1.5 rounded bg-cyan-950/60 hover:bg-cyan-900/70 border border-cyan-500/40 text-cyan-200 text-xs font-mono-code font-medium flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(2,132,199,0.2)]">
+          <svg class="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          <span class="hidden sm:inline">KARTU TRUF</span>
+          <span id="ledgerBadge" class="bg-cyan-400 text-slate-950 text-[10px] font-bold px-1.5 py-0.2 rounded-full">3</span>
+        </button>
+
+        <!-- Backlog / History -->
+        <button id="btnOpenBacklog" title="Riwayat Dialog" class="p-1.5 rounded bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </button>
+
+        <!-- Codex / Characters -->
+        <button id="btnOpenCodex" title="Dossier Karakter" class="p-1.5 rounded bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        </button>
+
+        <!-- Audio Toggle -->
+        <button id="btnToggleAudio" title="Audio Suara & Hujan" class="p-1.5 rounded bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-cyan-400 hover:text-cyan-200 transition">
+          <svg id="audioIconOn" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+          <svg id="audioIconOff" class="w-4 h-4 hidden text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+        </button>
+
+        <!-- Scene Jump / Selector -->
+        <button id="btnOpenSceneJump" title="Pindah Bab / Scene Jump" class="p-1.5 rounded bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 hover:text-white transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ==================== STAGE AREA (Procedural Character Sprites) ==================== -->
+    <main id="stageArea" class="relative flex-1 w-full flex items-end justify-center px-4 md:px-16 overflow-hidden pointer-events-none">
+      
+      <!-- Character: Aurelia Vanya Rajasa -->
+      <div id="spriteAurelia" class="sprite-container sprite-hidden absolute bottom-0 left-[10%] md:left-[22%] w-64 md:w-80 h-[480px] md:h-[580px] flex items-end justify-center">
+        <!-- SVG will be dynamically generated and injected -->
+        <div class="sprite-svg-wrapper w-full h-full"></div>
+      </div>
+
+      <!-- Character: Seraphina "Sera" Kirana -->
+      <div id="spriteSeraphina" class="sprite-container sprite-hidden absolute bottom-0 right-[10%] md:right-[22%] w-64 md:w-80 h-[480px] md:h-[580px] flex items-end justify-center">
+        <div class="sprite-svg-wrapper w-full h-full"></div>
+      </div>
+
+      <!-- Character: Nadine Larasati -->
+      <div id="spriteNadine" class="sprite-container sprite-hidden absolute bottom-0 left-[18%] md:left-[30%] w-64 md:w-80 h-[480px] md:h-[580px] flex items-end justify-center">
+        <div class="sprite-svg-wrapper w-full h-full"></div>
+      </div>
+
+      <!-- Character: Dion Pratama -->
+      <div id="spriteDion" class="sprite-container sprite-hidden absolute bottom-0 right-[15%] md:right-[26%] w-64 md:w-80 h-[480px] md:h-[580px] flex items-end justify-center">
+        <div class="sprite-svg-wrapper w-full h-full"></div>
+      </div>
+
+      <!-- Character: Kaelen Vance (MC / Auditor - When needed in dual confrontation) -->
+      <div id="spriteKael" class="sprite-container sprite-hidden absolute bottom-0 left-[8%] md:left-[14%] w-64 md:w-80 h-[480px] md:h-[580px] flex items-end justify-center">
+        <div class="sprite-svg-wrapper w-full h-full"></div>
+      </div>
+
+      <!-- Notification Toast / Stat Change Popup -->
+      <div id="toastNotification" class="absolute top-6 left-1/2 -translate-x-1/2 z-50 pointer-events-auto opacity-0 transition-all duration-500 transform -translate-y-4">
+        <div class="glass-panel-glow px-4 py-2 rounded-full border border-cyan-400 text-xs font-mono-code text-cyan-200 flex items-center gap-2 shadow-2xl">
+          <span id="toastIcon" class="text-cyan-400">⚡</span>
+          <span id="toastMessage">Log Terverifikasi</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- ==================== DIALOGUE & NARRATIVE INTERFACE ==================== -->
+    <footer id="dialogueContainer" class="relative z-30 w-full max-w-5xl mx-auto px-4 pb-4 transition-all duration-300">
+      
+      <!-- 1. PASSIVE SYSTEM: Micro-Expression Sight Insight Box -->
+      <div id="microSightBox" class="mb-2 w-full transition-all duration-500 transform translate-y-2 opacity-0 pointer-events-none">
+        <div class="glass-panel border-l-4 border-l-cyan-400 border-t border-r border-b border-cyan-500/30 rounded-lg p-2.5 px-3.5 shadow-[0_4px_20px_rgba(56,189,248,0.18)] flex items-start gap-3">
+          <div class="pt-0.5 text-cyan-300">
+            <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between text-[10px] uppercase font-mono-code text-cyan-400 mb-0.5 tracking-wider">
+              <span>[RESONANSI PSIKOLOGIS: MIKRO-EKSPRESI TERDETEKSI]</span>
+              <span id="microSightConfidence" class="text-slate-400">Akurasi: 96.8%</span>
+            </div>
+            <p id="microSightText" class="text-xs text-sky-200/90 font-mono-code italic leading-relaxed">
+              Target mengunci rahang bawah; pupil mengecil 12%. Upaya menutupi kepanikan dengan postur defensif formal.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. MAIN DIALOGUE BOX -->
+      <div id="mainDialogueBox" class="glass-panel rounded-xl border border-slate-700/80 p-4 md:p-5 shadow-2xl relative">
+        
+        <!-- Speaker Header & Tags -->
+        <div class="flex items-center justify-between border-b border-slate-700/60 pb-2 mb-3">
+          <div class="flex items-center gap-2.5">
+            <div id="speakerBadgeColor" class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#38bdf8]"></div>
+            <h2 id="speakerName" class="font-serif-title font-bold text-sm md:text-base tracking-wide text-white">
+              Kaelen Vance
+            </h2>
+            <span id="speakerTitle" class="text-[11px] font-mono-code text-slate-400 border border-slate-700/80 rounded px-2 py-0.2 bg-slate-900/60">
+              Special Auditor Yayasan
+            </span>
+          </div>
+
+          <!-- Quick Dialogue Controls -->
+          <div class="flex items-center gap-2 text-xs font-mono-code">
+            <button id="btnAutoPlay" class="text-slate-400 hover:text-cyan-300 px-2 py-0.5 rounded border border-slate-800 bg-slate-900/40 transition">
+              AUTO: <span id="autoPlayState">OFF</span>
+            </button>
+            <button id="btnSkipText" class="text-slate-400 hover:text-cyan-300 px-2 py-0.5 rounded border border-slate-800 bg-slate-900/40 transition">
+              SKIP &gt;&gt;
+            </button>
+          </div>
+        </div>
+
+        <!-- Dialogue Text Body -->
+        <div id="dialogueClickArea" class="cursor-pointer min-h-[72px] md:min-h-[84px] relative">
+          <p id="dialogueText" class="text-sm md:text-base text-slate-100 leading-relaxed font-normal">
+            Hujan deras membasahi kaca patri Menara Gading. Enam bulan lalu, aku melangkah keluar dari gedung ini sebagai pesakitan yang kehilangan segalanya. Hari ini, aku kembali memegang segel audit mereka.
+          </p>
+          <div id="dialoguePrompt" class="absolute right-0 bottom-0 text-cyan-400 text-xs animate-bounce hidden">
+            ▼
+          </div>
+        </div>
+
+        <!-- 3. INTERACTIVE CHOICES AREA -->
+        <div id="choicesContainer" class="mt-4 pt-3 border-t border-slate-800/80 flex flex-col gap-2.5 hidden">
+          <!-- Dynamic choice buttons inserted here -->
+        </div>
+
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ==================== MODALS & DRAWERS ==================== -->
+
+  <!-- A. LEVERAGE LEDGER (Buku Besar Kartu Truf) -->
+  <div id="modalLedger" class="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="w-full max-w-lg h-full glass-drawer p-6 flex flex-col justify-between overflow-y-auto transform translate-x-full transition-transform duration-300 ease-out" id="drawerLedgerContent">
+      <div>
+        <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-cyan-400 text-lg">⚖️</span>
+            <div>
+              <h3 class="font-serif-title font-bold text-white text-base uppercase tracking-wider">Buku Besar Kartu Truf</h3>
+              <p class="text-[11px] text-cyan-300/80 font-mono-code">Dossier Bukti Kriminal & Pelanggaran Etik</p>
+            </div>
+          </div>
+          <button id="btnCloseLedger" class="p-1 rounded text-slate-400 hover:text-white border border-slate-700/50 hover:bg-slate-800 transition">✕</button>
+        </div>
+
+        <!-- Cards List -->
+        <div class="space-y-4">
+          
+          <!-- Card 1 -->
+          <div class="glass-panel p-4 rounded-lg border border-cyan-500/30 hover:border-cyan-400/60 transition group">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-xs font-mono-code font-bold text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-2 py-0.5 rounded">
+                [BUKTI 01]
+              </span>
+              <span class="text-[10px] font-mono-code text-emerald-400 bg-emerald-950/60 border border-emerald-500/40 px-1.5 py-0.5 rounded">
+                TERVERIFIKASI
+              </span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-cyan-200 transition">
+              Kunci Checksum Heksadesimal Baris ke-412
+            </h4>
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+              Potongan commit kriptografis pada modul <code>lib-sentiment-v2</code> yang membuktikan algoritma Dion & Seraphina 85% identik dengan penelitian Kael sebelum beasiswanya dicabut.
+            </p>
+            <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono-code">
+              <span>Target: Dion Pratama & Sera</span>
+              <span class="text-cyan-300">Potensi: +25 Otoritas</span>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="glass-panel p-4 rounded-lg border border-amber-500/30 hover:border-amber-400/60 transition group">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-xs font-mono-code font-bold text-amber-300 bg-amber-950/80 border border-amber-500/40 px-2 py-0.5 rounded">
+                [BUKTI 02]
+              </span>
+              <span class="text-[10px] font-mono-code text-amber-400 bg-amber-950/60 border border-amber-500/40 px-1.5 py-0.5 rounded">
+                KRIMINAL AUDIT
+              </span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-amber-200 transition">
+              Log Pencairan Kas Senat Ilegal (Rp40 Juta)
+            </h4>
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+              Invoice fiktif atas nama "Tiga Konsultan Independen" yang dialirkan ke rekening bank cangkang milik kerabat Dion untuk membiayai suap delegasi kongres.
+            </p>
+            <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono-code">
+              <span>Target: Dion Pratama</span>
+              <span class="text-amber-300">Dampak: Skakmat Kas Keuangan</span>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="glass-panel p-4 rounded-lg border border-rose-500/30 hover:border-rose-400/60 transition group">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-xs font-mono-code font-bold text-rose-300 bg-rose-950/80 border border-rose-500/40 px-2 py-0.5 rounded">
+                [BUKTI 03]
+              </span>
+              <span class="text-[10px] font-mono-code text-rose-400 bg-rose-950/60 border border-rose-500/40 px-1.5 py-0.5 rounded">
+                DILEMA MORAL
+              </span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-rose-200 transition">
+              Tanda Tangan Skorsing Aurelia & Transfer RS Anonim
+            </h4>
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+              Dua dokumen kontradiktif: Surat skorsing Kael yang diteken Aurelia di bawah tekanan Rektorat, berbanding lurus dengan transfer darurat Rp25.000.000 ke rekening RS Ibu Kael pada malam yang sama.
+            </p>
+            <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono-code">
+              <span>Target: Aurelia Vanya</span>
+              <span class="text-rose-300">Kunci Hubungan / Penebusan</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-400 font-mono-code">
+        Kartu truf dapat dideploy pada sidang deliberasi atau konfrontasi personal koridor.
+      </div>
+    </div>
+  </div>
+
+  <!-- B. CHARACTER CODEX (Profil Karakter & Heroine) -->
+  <div id="modalCodex" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="w-full max-w-3xl glass-panel-glow rounded-xl p-6 max-h-[90vh] flex flex-col justify-between overflow-hidden">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3 mb-4">
+        <div>
+          <h3 class="font-serif-title font-bold text-white text-lg tracking-wide uppercase">Dossier Karakter & Status Relasi</h3>
+          <p class="text-xs text-cyan-300 font-mono-code">Laporan Intelijen Subjektif Auditor Kaelen Vance</p>
+        </div>
+        <button id="btnCloseCodex" class="p-1 rounded text-slate-400 hover:text-white border border-slate-700/50 hover:bg-slate-800 transition">✕</button>
+      </div>
+
+      <!-- Heroine Profiles Tabs / Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 overflow-y-auto pr-1 py-1">
+        
+        <!-- Aurelia Profile -->
+        <div class="glass-panel p-4 rounded-lg border border-slate-700/70 hover:border-cyan-400/40 transition">
+          <div class="w-full h-32 rounded bg-slate-900/80 mb-3 overflow-hidden flex items-center justify-center border border-slate-800" id="codexAvatarAurelia"></div>
+          <h4 class="font-serif-title font-bold text-white text-sm">Aurelia Vanya Rajasa</h4>
+          <p class="text-[10px] text-cyan-300 font-mono-code">Ketua Komisi Etik Senat</p>
+          <div class="mt-2 text-xs text-slate-300 space-y-1">
+            <p class="italic text-slate-400">"The Complicit Bystander"</p>
+            <p class="text-[11px] leading-relaxed">Putri aristokrat akademik yang mematuhi sistem demi melindungi keluarganya, namun menanggung beban rasa bersalah atas jatuhnya Kael.</p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between items-center text-[10px] font-mono-code">
+            <span class="text-slate-400">Status Relasi:</span>
+            <span id="codexRelAurelia" class="text-cyan-300 font-bold">Rasa Bersalah Terpendam</span>
+          </div>
+        </div>
+
+        <!-- Seraphina Profile -->
+        <div class="glass-panel p-4 rounded-lg border border-slate-700/70 hover:border-amber-400/40 transition">
+          <div class="w-full h-32 rounded bg-slate-900/80 mb-3 overflow-hidden flex items-center justify-center border border-slate-800" id="codexAvatarSeraphina"></div>
+          <h4 class="font-serif-title font-bold text-white text-sm">Seraphina "Sera" Kirana</h4>
+          <p class="text-[10px] text-amber-300 font-mono-code">Bintang Debat Fakultas</p>
+          <div class="mt-2 text-xs text-slate-300 space-y-1">
+            <p class="italic text-slate-400">"The Defector"</p>
+            <p class="text-[11px] leading-relaxed">Retorika tajam dan ambisi tanpa batas. Berpaling ke faksi Dion demi pengakuan, namun kini menyadari dirinya hanya pion yang siap dikorbankan.</p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between items-center text-[10px] font-mono-code">
+            <span class="text-slate-400">Status Relasi:</span>
+            <span id="codexRelSeraphina" class="text-amber-300 font-bold">Arogansi Defensif</span>
+          </div>
+        </div>
+
+        <!-- Nadine Profile -->
+        <div class="glass-panel p-4 rounded-lg border border-slate-700/70 hover:border-emerald-400/40 transition">
+          <div class="w-full h-32 rounded bg-slate-900/80 mb-3 overflow-hidden flex items-center justify-center border border-slate-800" id="codexAvatarNadine"></div>
+          <h4 class="font-serif-title font-bold text-white text-sm">Nadine Larasati</h4>
+          <p class="text-[10px] text-emerald-300 font-mono-code">Penjaga Arsip Forensik Data</p>
+          <div class="mt-2 text-xs text-slate-300 space-y-1">
+            <p class="italic text-slate-400">"The Mirror"</p>
+            <p class="text-[11px] leading-relaxed">Satu-satunya orang yang tetap berada di sisi Kael saat badai melanda. Memegang kunci bukti dan menjadi pengingat batas kemanusiaan Kael.</p>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between items-center text-[10px] font-mono-code">
+            <span class="text-slate-400">Status Relasi:</span>
+            <span id="codexRelNadine" class="text-emerald-300 font-bold">Suaka Teduh (50%)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400 font-mono-code">
+        <span>Karakteristik & respon heroine dipengaruhi oleh level Dingin/Empati Kael.</span>
+        <button id="btnCloseCodexBottom" class="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-white transition">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- C. BACKLOG / DIALOGUE HISTORY MODAL -->
+  <div id="modalBacklog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="w-full max-w-2xl h-[75vh] glass-panel rounded-xl p-5 flex flex-col justify-between">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-3">
+        <h3 class="font-serif-title font-bold text-white text-base">Riwayat Transkrip Sidang & Dialog</h3>
+        <button id="btnCloseBacklog" class="p-1 rounded text-slate-400 hover:text-white border border-slate-700/50 hover:bg-slate-800 transition">✕</button>
+      </div>
+      <div id="backlogContent" class="flex-1 overflow-y-auto space-y-3 pr-2 text-xs leading-relaxed">
+        <!-- Dynamic history items -->
+      </div>
+      <div class="pt-3 border-t border-slate-800 flex justify-end">
+        <button id="btnCloseBacklogBottom" class="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-white text-xs transition">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- D. SCENE JUMP / CHAPTER SELECTOR MODAL -->
+  <div id="modalSceneJump" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="w-full max-w-lg glass-panel-glow rounded-xl p-5 flex flex-col space-y-4">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-2">
+        <h3 class="font-serif-title font-bold text-white text-base">Pindah Bab (Scene Jump)</h3>
+        <button id="btnCloseSceneJump" class="p-1 rounded text-slate-400 hover:text-white transition">✕</button>
+      </div>
+      <p class="text-xs text-slate-300 font-mono-code">Pilih titik bab untuk eksplorasi rute dan testing percabangan:</p>
+      <div class="space-y-2">
+        <button onclick="jumpToScene('scene1')" class="w-full text-left p-3 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
+          <div>
+            <div class="text-xs font-bold text-white group-hover:text-cyan-300">SCENE 1: Bayangan di Balik Kaca</div>
+            <div class="text-[11px] text-slate-400">Prolog & Persiapan Audit di Arsip Bawah Tanah bersama Nadine</div>
+          </div>
+          <span class="text-cyan-400 text-xs">Lompat →</span>
+        </button>
+        <button onclick="jumpToScene('scene2')" class="w-full text-left p-3 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
+          <div>
+            <div class="text-xs font-bold text-white group-hover:text-cyan-300">SCENE 2: Variabel Keempat yang Hilang</div>
+            <div class="text-[11px] text-slate-400">Ruang Sidang Senat: Debat Kael vs Dion & Sera, Presidensi Aurelia</div>
+          </div>
+          <span class="text-cyan-400 text-xs">Lompat →</span>
+        </button>
+        <button onclick="jumpToScene('scene3_hub')" class="w-full text-left p-3 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
+          <div>
+            <div class="text-xs font-bold text-white group-hover:text-cyan-300">SCENE 3: Retakan di Koridor Hujan</div>
+            <div class="text-[11px] text-slate-400">Pilihan Rute Heroine: Aurelia (Balkon), Sera (Debat), Nadine (Arsip)</div>
+          </div>
+          <span class="text-cyan-400 text-xs">Lompat →</span>
+        </button>
+        <button onclick="jumpToScene('scene4')" class="w-full text-left p-3 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
+          <div>
+            <div class="text-xs font-bold text-white group-hover:text-cyan-300">SCENE 4: Evaluasi Temperatur Batin</div>
+            <div class="text-[11px] text-slate-400">Laporan Akhir Audit Psikologis, Penentuan Gelar & Rangkuman</div>
+          </div>
+          <span class="text-cyan-400 text-xs">Lompat →</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- E. TITLE SCREEN / START OVERLAY -->
+  <div id="titleScreen" class="fixed inset-0 z-50 flex flex-col justify-between items-center p-8 bg-[#07090e]/85 backdrop-blur-md transition-opacity duration-700">
+    <!-- Top Aesthetic Header -->
+    <div class="w-full flex justify-between items-center text-xs font-mono-code text-slate-500">
+      <span>MENARA GADING // KOMISI AUDIT KHUSUS</span>
+      <span>VERSI 1.0.4 - BUILD STABLE</span>
+    </div>
+
+    <!-- Center Title Block -->
+    <div class="text-center max-w-2xl px-4 py-8 relative">
+      <div class="inline-block px-3 py-1 mb-4 rounded-full border border-cyan-500/40 bg-cyan-950/40 text-cyan-300 text-xs font-mono-code tracking-widest uppercase">
+        Visual Novel & Social-Strategy RPG
+      </div>
+      <h1 class="text-4xl md:text-6xl font-serif-title font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-sky-300 tracking-wider mb-3 drop-shadow-[0_4px_24px_rgba(56,189,248,0.35)]">
+        GLASS CORONATION
+      </h1>
+      <h2 class="text-sm md:text-lg text-cyan-200/90 font-light tracking-[0.3em] uppercase mb-6 font-serif-title">
+        Titik Beku di Bawah Menara Gading
+      </h2>
+      <p class="text-xs md:text-sm text-slate-400 max-w-lg mx-auto leading-relaxed mb-8">
+        "Enam bulan lalu mereka merampas masa depanku dengan secarik surat etik. Malam ini, aku kembali bukan untuk memohon ampun, melainkan mengadili setiap kebohongan di balik jendela kaca mereka."
+      </p>
+
+      <!-- Primary Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+        <button id="btnStartGame" class="w-48 py-3 rounded-lg bg-gradient-to-r from-cyan-600 to-sky-500 hover:from-cyan-500 hover:to-sky-400 text-slate-950 font-serif-title font-bold text-sm tracking-wider shadow-[0_0_24px_rgba(56,189,248,0.4)] transition-all transform hover:scale-105 active:scale-95">
+          MULAI SIDANG
+        </button>
+        <button id="btnTitleCodex" class="w-48 py-3 rounded-lg glass-panel hover:border-cyan-400/60 text-cyan-200 font-mono-code text-xs tracking-wider transition-all">
+          DOSSIER HEROINE
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Audio / Instruction Notice -->
+    <div class="text-center text-[11px] text-slate-500 font-mono-code">
+      Klik "MULAI SIDANG" untuk mengaktifkan Audio Synthesizer (Hujan & Efek Kaca). Gunakan earphone untuk pengalaman imersif.
+    </div>
+  </div>
+
+  <!-- F. SCENE 4: EVALUASI TEMPERATUR BATIN (Ending Report Modal) -->
+  <div id="modalEndingReport" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-lg p-4 transition-opacity duration-500 opacity-0 pointer-events-none">
+    <div class="w-full max-w-2xl glass-panel-glow rounded-xl p-6 md:p-8 flex flex-col justify-between overflow-y-auto max-h-[95vh]">
+      
+      <div class="text-center border-b border-cyan-500/30 pb-4 mb-5">
+        <div class="inline-block px-3 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/40 text-[10px] text-cyan-300 font-mono-code uppercase mb-2">
+          AUDIT PSIKOLOGIS BAB 1 SELESAI
+        </div>
+        <h2 class="text-2xl md:text-3xl font-serif-title font-bold text-white mb-1">
+          EVALUASI TEMPERATUR BATIN
+        </h2>
+        <p class="text-xs text-slate-400 font-mono-code">Hasil Diagnosa Rasionalitas & Kepekaan Kaelen Vance</p>
+      </div>
+
+      <!-- Result Card -->
+      <div class="glass-panel p-5 rounded-lg border border-cyan-500/40 mb-5 relative overflow-hidden">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="space-y-1 text-center md:text-left">
+            <span class="text-[10px] uppercase font-mono-code text-slate-400">Gelar Predikat Auditor:</span>
+            <h3 id="reportTitle" class="text-lg md:text-xl font-serif-title font-extrabold text-cyan-300">
+              ARCHITECT OF ABSOLUTE ZERO
+            </h3>
+            <p id="reportDescription" class="text-xs text-slate-300 leading-relaxed max-w-md">
+              Kaelen telah membuang seluruh keraguan moral. Menara Gading bergetar di bawah kalkulasi audit yang tanpa ampun. Tidak ada ruang bagi kompromi romantis, hanya kepatuhan mutlak.
+            </p>
+          </div>
+          <div class="w-28 h-28 rounded-full border-2 border-cyan-400/60 bg-cyan-950/40 flex flex-col items-center justify-center text-center p-2 shadow-[0_0_20px_rgba(56,189,248,0.3)]">
+            <span class="text-[9px] uppercase font-mono-code text-slate-400">Suhu Batin</span>
+            <span id="reportTemp" class="text-2xl font-serif-title font-bold text-cyan-200">-18°C</span>
+            <span id="reportState" class="text-[9px] font-mono-code text-cyan-300">Membeku</span>
+          </div>
+        </div>
+
+        <!-- Stat Summary Bar Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-800 text-center font-mono-code text-xs">
+          <div class="p-2 rounded bg-slate-900/60">
+            <div class="text-[10px] text-slate-400">DINGIN</div>
+            <div id="statRepCold" class="text-cyan-300 font-bold">75%</div>
+          </div>
+          <div class="p-2 rounded bg-slate-900/60">
+            <div class="text-[10px] text-slate-400">EMPATI</div>
+            <div id="statRepEmp" class="text-amber-300 font-bold">25%</div>
+          </div>
+          <div class="p-2 rounded bg-slate-900/60">
+            <div class="text-[10px] text-slate-400">OTORITAS</div>
+            <div id="statRepAuth" class="text-slate-200 font-bold">70%</div>
+          </div>
+          <div class="p-2 rounded bg-slate-900/60">
+            <div class="text-[10px] text-slate-400">RESONANSI</div>
+            <div id="statRepRes" class="text-sky-300 font-bold">45%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heroine Relationship Recaps -->
+      <div class="space-y-2 mb-6">
+        <h4 class="text-xs uppercase font-mono-code text-slate-400">Dampak Terhadap Heroine:</h4>
+        <div id="reportHeroineFeedback" class="space-y-1.5 text-xs text-slate-300">
+          <!-- Dynamic heroine summaries -->
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <button onclick="restartGame()" class="py-2.5 px-6 rounded-lg glass-panel hover:border-cyan-400 text-xs font-mono-code text-cyan-200 transition">
+          ↺ ULANGI SIDANG (RESTART)
+        </button>
+        <button onclick="closeEndingReport()" class="py-2.5 px-6 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-serif-title font-bold text-xs tracking-wider transition shadow-lg">
+          SIMPAN & LANJUTKAN KE CHAPTER 2
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ==================== SCRIPT ENGINE (Canvas, Audio, VN State Machine) ==================== -->
+  <script>
+    /* =========================================================================
+       1. GAME STATE MANAGEMENT
+       ========================================================================= */
+    const State = {
+      // Psychological Thermometer Stats
+      coldness: 65,     // Kalkulasi & Distansi (Default 65%)
+      empathy: 35,      // Resonansi & Kemanusiaan (Default 35%)
+      authority: 50,    // Otoritas Audit (Default 50%)
+      resonance: 40,    // Kepekaan Mikro-Ekspresi (Default 40%)
+
+      // Heroine Affection & Relations
+      affection: {
+        aurelia: 30,    // Aurelia Vanya Rajasa
+        seraphina: 20,  // Seraphina Kirana
+        nadine: 50      // Nadine Larasati
+      },
+
+      // Narrative State
+      currentSceneId: 'scene1',
+      currentNodeIndex: 0,
+      activeSpeaker: 'Kael',
+      autoPlay: false,
+      autoPlayTimer: null,
+      isTyping: false,
+      typewriterTimeout: null,
+      fullCurrentText: '',
+      history: [],
+      
+      // Leverage Ledger State
+      leverageBurnt: false, // true if player chose BURN in scene 2
+      unlockedBonusInsight: false
+    };
+
+    /* =========================================================================
+       2. PROCEDURAL WEB AUDIO SYNTHESIZER
+       ========================================================================= */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.isMuted = false;
+        this.rainGain = null;
+        this.masterGain = null;
+        this.rainSource = null;
+      }
+
+      init() {
+        if (this.ctx) return;
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioContext();
+
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
+        this.masterGain.connect(this.ctx.destination);
+
+        this.setupRainSynth();
+      }
+
+      setupRainSynth() {
+        if (!this.ctx) return;
+        // Generate continuous pink/brownian noise buffer for realistic rain
+        const bufferSize = this.ctx.sampleRate * 3;
+        const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99 * b0 + white * 0.05;
+          b1 = 0.96 * b1 + white * 0.11;
+          b2 = 0.86 * b2 + white * 0.25;
+          output[i] = (b0 + b1 + b2) * 0.4;
+        }
+
+        this.rainSource = this.ctx.createBufferSource();
+        this.rainSource.buffer = noiseBuffer;
+        this.rainSource.loop = true;
+
+        // Bandpass + Lowpass filters for interior window acoustics
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(950, this.ctx.currentTime);
+
+        this.rainGain = this.ctx.createGain();
+        this.rainGain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+
+        this.rainSource.connect(filter);
+        filter.connect(this.rainGain);
+        this.rainGain.connect(this.masterGain);
+
+        this.rainSource.start();
+      }
+
+      playTypewriter(speaker) {
+        if (!this.ctx || this.isMuted) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          
+          let freq = 220; // Default Kael deep resonant blip
+          if (speaker === 'Aurelia') freq = 490;
+          else if (speaker === 'Seraphina') freq = 620;
+          else if (speaker === 'Nadine') freq = 360;
+          else if (speaker === 'Dion') freq = 280;
+          else if (speaker === 'Narator') freq = 310;
+
+          // Subtle pitch flutter
+          freq += (Math.random() - 0.5) * 20;
+
+          osc.type = speaker === 'Kael' ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+          gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.035);
+
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.04);
+        } catch (e) { }
+      }
+
+      playGlassShatter() {
+        if (!this.ctx || this.isMuted) return;
+        try {
+          const now = this.ctx.currentTime;
+          // Cluster of high crystalline sines decaying rapidly
+          const freqs = [1200, 1850, 2400, 3100, 4200];
+          freqs.forEach((f, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(f + (Math.random() * 80), now);
+            gain.gain.setValueAtTime(0.12 / (i + 1), now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6 + (i * 0.1));
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+            osc.start(now);
+            osc.stop(now + 0.9);
+          });
+
+          // Noise transient for the impact crunch
+          const bufferSize = this.ctx.sampleRate * 0.15;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+          const noiseFilter = this.ctx.createBiquadFilter();
+          noiseFilter.type = 'highpass';
+          noiseFilter.frequency.setValueAtTime(2000, now);
+          const noiseGain = this.ctx.createGain();
+          noiseGain.gain.setValueAtTime(0.2, now);
+          noise.connect(noiseFilter);
+          noiseFilter.connect(noiseGain);
+          noiseGain.connect(this.masterGain);
+          noise.start(now);
+        } catch (e) { }
+      }
+
+      playHeartbeat() {
+        if (!this.ctx || this.isMuted) return;
+        try {
+          const now = this.ctx.currentTime;
+          [0, 0.22].forEach((delay) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(60, now + delay);
+            osc.frequency.exponentialRampToValueAtTime(32, now + delay + 0.14);
+
+            gain.gain.setValueAtTime(0.18, now + delay);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.18);
+
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+            osc.start(now + delay);
+            osc.stop(now + delay + 0.2);
+          });
+        } catch (e) { }
+      }
+
+      playThunder() {
+        if (!this.ctx || this.isMuted) return;
+        try {
+          const now = this.ctx.currentTime;
+          const bufferSize = this.ctx.sampleRate * 1.8;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.pow(1 - (i / bufferSize), 1.5);
+          }
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(140, now);
+          filter.frequency.linearRampToValueAtTime(45, now + 1.6);
+
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.masterGain);
+          noise.start(now);
+        } catch (e) { }
+      }
+
+      playChime() {
+        if (!this.ctx || this.isMuted) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.exponentialRampToValueAtTime(1760, now + 0.08);
+
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+          osc.connect(gain);
+          gain.connect(this.masterGain);
+          osc.start(now);
+          osc.stop(now + 0.45);
+        } catch (e) { }
+      }
+
+      toggleMute() {
+        this.isMuted = !this.isMuted;
+        if (this.masterGain && this.ctx) {
+          this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.7, this.ctx.currentTime);
+        }
+        return this.isMuted;
+      }
+    }
+
+    const audio = new SoundEngine();
+
+    /* =========================================================================
+       3. PROCEDURAL BACKGROUND CANVAS (Rain on Glass & Ivory Tower Sky)
+       ========================================================================= */
+    const canvas = document.getElementById('rainCanvas');
+    const ctx = canvas.getContext('2d');
+    let drops = [];
+    let glassBeads = [];
+    let width, height;
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      initGlassBeads();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    function initGlassBeads() {
+      glassBeads = [];
+      const count = Math.floor(width / 35);
+      for (let i = 0; i < count; i++) {
+        glassBeads.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: 1.5 + Math.random() * 3.5,
+          speed: 0.1 + Math.random() * 0.4,
+          trailLength: 15 + Math.random() * 30,
+          opacity: 0.2 + Math.random() * 0.4
+        });
+      }
+
+      drops = [];
+      const dropCount = Math.floor(width / 14);
+      for (let i = 0; i < dropCount; i++) {
+        drops.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          length: 14 + Math.random() * 22,
+          speed: 12 + Math.random() * 16,
+          opacity: 0.12 + Math.random() * 0.25
+        });
+      }
+    }
+
+    function triggerLightning() {
+      const flashEl = document.getElementById('lightningFlash');
+      flashEl.style.animation = 'none';
+      flashEl.offsetHeight; // reflow
+      flashEl.style.animation = 'thunderFlash 0.65s ease-out forwards';
+      audio.playThunder();
+    }
+
+    function renderCanvas() {
+      // Background gradient (Stormy Obsidian / Slate Navy)
+      const grad = ctx.createLinearGradient(0, 0, 0, height);
+      grad.addColorStop(0, '#04060a');
+      grad.addColorStop(0.5, '#0b111a');
+      grad.addColorStop(1, '#080d14');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+
+      // Distant Ivory Tower Window Mullions (Dark Academia Architecture)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 14;
+      // Vertical stone mullions
+      ctx.beginPath();
+      ctx.moveTo(width * 0.25, 0); ctx.lineTo(width * 0.25, height);
+      ctx.moveTo(width * 0.5, 0); ctx.lineTo(width * 0.5, height);
+      ctx.moveTo(width * 0.75, 0); ctx.lineTo(width * 0.75, height);
+      // Gothic arch horizontal transom bar
+      ctx.moveTo(0, height * 0.28); ctx.lineTo(width, height * 0.28);
+      ctx.stroke();
+
+      // Exterior falling rain streaks
+      ctx.strokeStyle = 'rgba(186, 230, 253, 0.22)';
+      ctx.lineWidth = 1.2;
+      for (let i = 0; i < drops.length; i++) {
+        const d = drops[i];
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x - 2, d.y + d.length);
+        ctx.stroke();
+
+        d.y += d.speed;
+        d.x -= 1;
+        if (d.y > height) {
+          d.y = -d.length;
+          d.x = Math.random() * (width + 50);
+        }
+      }
+
+      // Interior window condensation drops slowly trickling down
+      for (let i = 0; i < glassBeads.length; i++) {
+        const b = glassBeads[i];
+        
+        // Water droplet head
+        ctx.fillStyle = `rgba(224, 242, 254, ${b.opacity})`;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Droplet trickling streak
+        ctx.strokeStyle = `rgba(186, 230, 253, ${b.opacity * 0.4})`;
+        ctx.lineWidth = b.radius * 0.8;
+        ctx.beginPath();
+        ctx.moveTo(b.x, b.y - b.trailLength);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+
+        b.y += b.speed;
+        if (Math.random() < 0.01) {
+          b.speed = 0.8 + Math.random() * 1.5; // sudden bead slide
+        } else if (b.speed > 0.4) {
+          b.speed *= 0.95;
+        }
+
+        if (b.y > height + 20) {
+          b.y = -20;
+          b.x = Math.random() * width;
+          b.speed = 0.1 + Math.random() * 0.3;
+        }
+      }
+
+      requestAnimationFrame(renderCanvas);
+    }
+
+    resizeCanvas();
+    renderCanvas();
+
+    // Occasional subtle lightning during tense scenes
+    setInterval(() => {
+      if (Math.random() < 0.08 && State.currentSceneId === 'scene2') {
+        triggerLightning();
+      }
+    }, 14000);
+
+    /* =========================================================================
+       4. PROCEDURAL HIGH-DETAIL EXPRESSIVE SVG CHARACTER SPRITES
+       ========================================================================= */
+    const CharacterSVGs = {
+      // AURELIA VANYA RAJASA (Aristocratic, Senatorial Blazer, Silver Pin, Silk Scarf)
+      Aurelia: (expression = 'calm') => {
+        let eyeExpression = `<ellipse cx="140" cy="180" rx="6" ry="7" fill="#1e293b" /><ellipse cx="180" cy="180" rx="6" ry="7" fill="#1e293b" /><circle cx="142" cy="178" r="2.2" fill="#fff" /><circle cx="182" cy="178" r="2.2" fill="#fff" />`;
+        let mouthExpression = `<path d="M152 216 Q160 219 168 216" stroke="#c084fc" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+        let brows = `<path d="M132 168 Q142 166 150 170" stroke="#1e293b" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M170 170 Q178 166 188 168" stroke="#1e293b" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+
+        if (expression === 'shocked') {
+          eyeExpression = `<circle cx="140" cy="180" r="7.5" fill="#0f172a" /><circle cx="180" cy="180" r="7.5" fill="#0f172a" /><circle cx="143" cy="177" r="3" fill="#fff" /><circle cx="183" cy="177" r="3" fill="#fff" />`;
+          brows = `<path d="M130 162 Q140 160 150 165" stroke="#1e293b" stroke-width="3" fill="none"/><path d="M170 165 Q180 160 190 162" stroke="#1e293b" stroke-width="3" fill="none"/>`;
+          mouthExpression = `<ellipse cx="160" cy="218" rx="5" ry="7" fill="#4c1d95" stroke="#c084fc" stroke-width="1.5" />`;
+        } else if (expression === 'defensive') {
+          brows = `<path d="M132 172 Q142 166 150 164" stroke="#1e293b" stroke-width="3" fill="none"/><path d="M170 164 Q178 166 188 172" stroke="#1e293b" stroke-width="3" fill="none"/>`;
+          mouthExpression = `<line x1="152" y1="216" x2="168" y2="216" stroke="#c084fc" stroke-width="3" stroke-linecap="round"/>`;
+        } else if (expression === 'guilt') {
+          eyeExpression = `<path d="M134 182 Q140 186 146 182" stroke="#334155" stroke-width="3.5" fill="none"/><path d="M174 182 Q180 186 186 182" stroke="#334155" stroke-width="3.5" fill="none"/>`;
+          brows = `<path d="M132 166 Q142 168 150 174" stroke="#1e293b" stroke-width="2.5" fill="none"/><path d="M170 174 Q178 168 188 166" stroke="#1e293b" stroke-width="2.5" fill="none"/>`;
+          mouthExpression = `<path d="M154 219 Q160 216 166 219" stroke="#c084fc" stroke-width="2" fill="none"/>`;
+        } else if (expression === 'cornered') {
+          eyeExpression = `<circle cx="140" cy="180" r="6" fill="#0f172a" /><circle cx="180" cy="180" r="6" fill="#0f172a" /><circle cx="141" cy="179" r="2" fill="#fff" /><circle cx="181" cy="179" r="2" fill="#fff" />`;
+          brows = `<path d="M132 164 Q142 166 150 168" stroke="#1e293b" stroke-width="3" fill="none"/><path d="M170 168 Q178 166 188 164" stroke="#1e293b" stroke-width="3" fill="none"/>`;
+          mouthExpression = `<path d="M152 218 Q160 214 168 217" stroke="#9333ea" stroke-width="2.5" fill="none"/>`;
+        }
+
+        return `
+        <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
+          <!-- Back Hair -->
+          <path d="M90 180 C80 280 85 450 95 560 L225 560 C235 450 240 280 230 180 Z" fill="#090d16"/>
+          <!-- Body / Tailored Senatorial Coat -->
+          <path d="M95 580 L110 320 L135 270 L185 270 L210 320 L225 580 Z" fill="#1e1b4b"/>
+          <!-- Silver Embroidery Lapel -->
+          <path d="M135 270 L150 420 L160 420 L170 420 L185 270 L160 360 Z" fill="#312e81" stroke="#a5b4fc" stroke-width="1.5"/>
+          <!-- Silk Scarf (Rose-Purple) -->
+          <path d="M148 260 Q160 290 172 260 L160 380 Z" fill="#86198f" opacity="0.85"/>
+          <!-- Senatorial Silver Ethics Brooch -->
+          <polygon points="160,330 166,340 160,350 154,340" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.5"/>
+          <!-- Neck -->
+          <path d="M145 220 L145 270 L175 270 L175 220 Z" fill="#fed7aa"/>
+          <!-- Head / Face -->
+          <path d="M120 160 C120 120 200 120 200 160 C200 215 160 245 160 245 C160 245 120 215 120 160 Z" fill="#ffedd5"/>
+          <!-- Hair (Front Bangs & Aristocratic Styling) -->
+          <path d="M115 155 C125 110 195 110 205 155 C190 145 175 145 160 165 C145 145 130 145 115 155 Z" fill="#0f172a"/>
+          <!-- Silver Hairpin / Kanzashi Accent -->
+          <line x1="190" y1="125" x2="225" y2="105" stroke="#e2e8f0" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="225" cy="105" r="4.5" fill="#38bdf8"/>
+          <!-- Expression Features -->
+          ${brows}
+          ${eyeExpression}
+          <!-- Nose -->
+          <path d="M160 188 L158 198 L162 198" stroke="#fdba74" stroke-width="1.5" fill="none"/>
+          ${mouthExpression}
+        </svg>`;
+      },
+
+      // SERAPHINA KIRANA (Dynamic Debate Star, Golden Lapel Pin, Wavy Auburn/Honey Hair)
+      Seraphina: (expression = 'calm') => {
+        let eyeExpression = `<ellipse cx="140" cy="180" rx="6.5" ry="7" fill="#78350f" /><ellipse cx="180" cy="180" rx="6.5" ry="7" fill="#78350f" /><circle cx="142" cy="178" r="2.5" fill="#fff" /><circle cx="182" cy="178" r="2.5" fill="#fff" />`;
+        let mouthExpression = `<path d="M152 216 Q162 222 170 214" stroke="#ea580c" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+        let brows = `<path d="M130 166 Q142 162 152 168" stroke="#451a03" stroke-width="2.5" fill="none"/><path d="M168 168 Q178 162 190 166" stroke="#451a03" stroke-width="2.5" fill="none"/>`;
+
+        if (expression === 'shocked') {
+          eyeExpression = `<circle cx="140" cy="180" r="7.5" fill="#451a03" /><circle cx="180" cy="180" r="7.5" fill="#451a03" /><circle cx="142" cy="177" r="3" fill="#fff" /><circle cx="182" cy="177" r="3" fill="#fff" />`;
+          brows = `<path d="M130 160 Q142 158 152 164" stroke="#451a03" stroke-width="3" fill="none"/><path d="M168 164 Q178 158 190 160" stroke="#451a03" stroke-width="3" fill="none"/>`;
+          mouthExpression = `<ellipse cx="160" cy="217" rx="5" ry="6" fill="#7c2d12" stroke="#ea580c" stroke-width="1.5" />`;
+        } else if (expression === 'defensive') {
+          brows = `<path d="M130 172 Q142 164 152 162" stroke="#451a03" stroke-width="3.2" fill="none"/><path d="M168 162 Q178 164 190 172" stroke="#451a03" stroke-width="3.2" fill="none"/>`;
+          mouthExpression = `<path d="M152 218 L168 215" stroke="#b91c1c" stroke-width="3" stroke-linecap="round"/>`;
+        } else if (expression === 'cornered') {
+          eyeExpression = `<circle cx="140" cy="180" r="6" fill="#451a03" /><circle cx="180" cy="180" r="6" fill="#451a03" /><circle cx="141" cy="179" r="1.5" fill="#fff" /><circle cx="181" cy="179" r="1.5" fill="#fff" />`;
+          brows = `<path d="M132 164 Q142 166 150 170" stroke="#451a03" stroke-width="3" fill="none"/><path d="M170 170 Q178 166 188 164" stroke="#451a03" stroke-width="3" fill="none"/>`;
+          mouthExpression = `<path d="M152 217 Q160 213 168 218" stroke="#991b1b" stroke-width="2.5" fill="none"/>`;
+        }
+
+        return `
+        <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
+          <!-- Back Hair (Wavy Volume) -->
+          <path d="M80 180 C60 280 75 460 90 560 L230 560 C245 460 260 280 240 180 Z" fill="#451a03"/>
+          <!-- Blazer (Sharp Charcoal Navy) -->
+          <path d="M90 580 L105 310 L135 265 L185 265 L215 310 L230 580 Z" fill="#172554"/>
+          <!-- Golden Debate Lapel -->
+          <path d="M135 265 L150 410 L170 410 L185 265 L160 350 Z" fill="#1e3a8a" stroke="#fbbf24" stroke-width="1.8"/>
+          <!-- Golden Champion Debate Emblem -->
+          <circle cx="142" cy="315" r="5" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
+          <!-- Inner Cream Blouse -->
+          <polygon points="148,265 172,265 160,340" fill="#fef3c7"/>
+          <!-- Neck -->
+          <path d="M145 220 L145 265 L175 265 L175 220 Z" fill="#fed7aa"/>
+          <!-- Head / Face -->
+          <path d="M120 160 C120 120 200 120 200 160 C200 215 160 245 160 245 C160 245 120 215 120 160 Z" fill="#ffedd5"/>
+          <!-- Front Wavy Auburn Hair -->
+          <path d="M110 155 C120 95 200 95 210 155 C195 135 175 140 155 160 C135 140 120 135 110 155 Z" fill="#78350f"/>
+          <path d="M110 155 C95 200 100 270 115 320" stroke="#78350f" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <path d="M210 155 C225 200 220 270 205 320" stroke="#78350f" stroke-width="14" fill="none" stroke-linecap="round"/>
+          <!-- Features -->
+          ${brows}
+          ${eyeExpression}
+          <!-- Nose -->
+          <path d="M160 188 L158 197 L162 197" stroke="#fdba74" stroke-width="1.5" fill="none"/>
+          ${mouthExpression}
+        </svg>`;
+      },
+
+      // NADINE LARASATI (Forensic Data Archivist, Cardigan, Round Silver Glasses, Bun)
+      Nadine: (expression = 'calm') => {
+        let eyeExpression = `<ellipse cx="140" cy="180" rx="5.5" ry="6.5" fill="#047857" /><ellipse cx="180" cy="180" rx="5.5" ry="6.5" fill="#047857" /><circle cx="142" cy="178" r="2" fill="#fff" /><circle cx="182" cy="178" r="2" fill="#fff" />`;
+        let mouthExpression = `<path d="M154 216 Q160 219 166 216" stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+        let brows = `<path d="M132 168 Q142 166 150 168" stroke="#1c1917" stroke-width="2" fill="none"/><path d="M170 168 Q178 166 188 168" stroke="#1c1917" stroke-width="2" fill="none"/>`;
+
+        if (expression === 'shocked') {
+          eyeExpression = `<circle cx="140" cy="180" r="7" fill="#065f46" /><circle cx="180" cy="180" r="7" fill="#065f46" /><circle cx="142" cy="177" r="2.8" fill="#fff" /><circle cx="182" cy="177" r="2.8" fill="#fff" />`;
+          brows = `<path d="M132 162 Q142 160 150 164" stroke="#1c1917" stroke-width="2.5" fill="none"/><path d="M170 164 Q178 160 188 162" stroke="#1c1917" stroke-width="2.5" fill="none"/>`;
+          mouthExpression = `<ellipse cx="160" cy="217" rx="4" ry="5" fill="#047857" stroke="#a7f3d0" stroke-width="1.2" />`;
+        } else if (expression === 'defensive') {
+          mouthExpression = `<line x1="154" y1="216" x2="166" y2="216" stroke="#059669" stroke-width="2.5" stroke-linecap="round"/>`;
+        }
+
+        return `
+        <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
+          <!-- Hair Bun Behind -->
+          <circle cx="160" cy="100" r="32" fill="#292524"/>
+          <!-- Knitted Cozy Emerald Cardigan -->
+          <path d="M90 580 L105 320 L130 270 L190 270 L215 320 L230 580 Z" fill="#064e3b"/>
+          <path d="M130 270 L145 440 L175 440 L190 270 L160 380 Z" fill="#047857" stroke="#6ee7b7" stroke-width="1"/>
+          <!-- Server Room Keycard Lanyard -->
+          <path d="M148 270 L160 390 L172 270" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
+          <rect x="152" y="390" width="16" height="24" rx="2" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+          <line x1="155" y1="398" x2="165" y2="398" stroke="#38bdf8" stroke-width="1.5"/>
+          <!-- Neck -->
+          <path d="M145 220 L145 270 L175 270 L175 220 Z" fill="#fcd34d"/>
+          <!-- Head / Face -->
+          <path d="M120 160 C120 120 200 120 200 160 C200 215 160 245 160 245 C160 245 120 215 120 160 Z" fill="#fef08a"/>
+          <!-- Front Soft Brown Hair -->
+          <path d="M115 155 C125 105 195 105 205 155 C190 145 160 148 115 155 Z" fill="#292524"/>
+          <path d="M115 155 C110 190 115 230 122 250" stroke="#292524" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M205 155 C210 190 205 230 198 250" stroke="#292524" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <!-- Thin Round Silver Spectacles -->
+          <circle cx="140" cy="180" r="14" fill="none" stroke="#cbd5e1" stroke-width="2.5"/>
+          <circle cx="180" cy="180" r="14" fill="none" stroke="#cbd5e1" stroke-width="2.5"/>
+          <line x1="154" y1="180" x2="166" y2="180" stroke="#cbd5e1" stroke-width="2.5"/>
+          <!-- Features -->
+          ${brows}
+          ${eyeExpression}
+          <!-- Nose -->
+          <path d="M160 188 L158 198 L162 198" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
+          ${mouthExpression}
+        </svg>`;
+      },
+
+      // DION PRATAMA (Smug Politician Demeanor, Navy Suit, Gelled Hair)
+      Dion: (expression = 'calm') => {
+        let eyeExpression = `<ellipse cx="140" cy="180" rx="6" ry="6" fill="#1e293b" /><ellipse cx="180" cy="180" rx="6" ry="6" fill="#1e293b" /><circle cx="142" cy="178" r="1.8" fill="#fff" /><circle cx="182" cy="178" r="1.8" fill="#fff" />`;
+        let mouthExpression = `<path d="M152 216 Q162 222 170 214" stroke="#991b1b" stroke-width="2.5" fill="none"/>`;
+        let brows = `<path d="M130 166 Q142 164 150 168" stroke="#0f172a" stroke-width="3" fill="none"/><path d="M170 168 Q178 164 190 166" stroke="#0f172a" stroke-width="3" fill="none"/>`;
+
+        if (expression === 'shocked' || expression === 'cornered') {
+          eyeExpression = `<circle cx="140" cy="180" r="7" fill="#0f172a" /><circle cx="180" cy="180" r="7" fill="#0f172a" /><circle cx="142" cy="178" r="2" fill="#fff" /><circle cx="182" cy="178" r="2" fill="#fff" />`;
+          brows = `<path d="M130 162 Q142 165 150 170" stroke="#0f172a" stroke-width="3.2" fill="none"/><path d="M170 170 Q178 165 190 162" stroke="#0f172a" stroke-width="3.2" fill="none"/>`;
+          mouthExpression = `<path d="M150 220 Q160 214 170 219" stroke="#991b1b" stroke-width="3" fill="none"/>`;
+        }
+
+        return `
+        <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
+          <!-- Sleek Politician Suit (Deep Navy) -->
+          <path d="M90 580 L105 310 L135 260 L185 260 L215 310 L230 580 Z" fill="#0f172a"/>
+          <!-- Lapel & Silk Tie -->
+          <path d="M135 260 L150 420 L170 420 L185 260 L160 340 Z" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+          <polygon points="156,260 164,260 160,380" fill="#dc2626"/>
+          <!-- Gold Watch / Pin -->
+          <circle cx="140" cy="305" r="4" fill="#fbbf24"/>
+          <!-- Neck -->
+          <path d="M145 220 L145 260 L175 260 L175 220 Z" fill="#fed7aa"/>
+          <!-- Head / Face -->
+          <path d="M120 160 C120 120 200 120 200 160 C200 215 160 245 160 245 C160 245 120 215 120 160 Z" fill="#ffedd5"/>
+          <!-- Gelled Modern Haircut -->
+          <path d="M115 150 C120 100 200 95 208 140 C195 130 175 135 155 145 C135 135 120 135 115 150 Z" fill="#090d16"/>
+          <!-- Features -->
+          ${brows}
+          ${eyeExpression}
+          <!-- Nose -->
+          <path d="M160 188 L158 198 L163 198" stroke="#fdba74" stroke-width="1.5" fill="none"/>
+          ${mouthExpression}
+        </svg>`;
+      },
+
+      // KAELEN VANCE (Protagonist / Auditor, Titanium Wire Glasses, Charcoal Coat)
+      Kael: (expression = 'calm') => {
+        return `
+        <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
+          <!-- Heavy Charcoal Trench / Auditor Coat -->
+          <path d="M85 580 L100 310 L135 255 L185 255 L220 310 L235 580 Z" fill="#090d16"/>
+          <!-- High Stiff Collar -->
+          <path d="M125 255 L135 230 L150 255 Z" fill="#1e293b"/>
+          <path d="M195 255 L185 230 L170 255 Z" fill="#1e293b"/>
+          <!-- Auditor Silver Foundation Pin -->
+          <polygon points="142,280 148,270 148,290" fill="#7dd3fc" stroke="#38bdf8" stroke-width="1"/>
+          <!-- Neck -->
+          <path d="M145 210 L145 255 L175 255 L175 210 Z" fill="#f8fafc"/>
+          <!-- Head / Face -->
+          <path d="M120 155 C120 115 200 115 200 155 C200 210 160 240 160 240 C160 240 120 210 120 155 Z" fill="#f1f5f9"/>
+          <!-- Dark Tousled Hair -->
+          <path d="M112 150 C118 95 202 95 208 145 C190 135 170 140 150 150 C130 140 118 140 112 150 Z" fill="#020617"/>
+          <!-- Titanium Wire Glasses (Cold Analytical Framing) -->
+          <rect x="128" y="168" width="26" height="18" rx="2" fill="none" stroke="#7dd3fc" stroke-width="2"/>
+          <rect x="166" y="168" width="26" height="18" rx="2" fill="none" stroke="#7dd3fc" stroke-width="2"/>
+          <line x1="154" y1="177" x2="166" y2="177" stroke="#7dd3fc" stroke-width="2"/>
+          <!-- Calm Calculated Gaze -->
+          <ellipse cx="141" cy="177" rx="4" ry="4" fill="#0284c7" />
+          <ellipse cx="179" cy="177" rx="4" ry="4" fill="#0284c7" />
+          <line x1="152" y1="214" x2="168" y2="214" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`;
+      }
+    };
+
+    /* =========================================================================
+       5. NARRATIVE SCRIPT & BRANCHING NODES (BAHASA INDONESIA)
+       ========================================================================= */
+    const STORY_DATABASE = {
+      
+      // ==================== SCENE 1: BAYANGAN DI BALIK KACA ====================
+      scene1: [
+        {
+          id: 's1_n1',
+          speaker: 'Narator',
+          title: 'Ruang Tunggu ICU — Kilas Balik 6 Bulan Lalu',
+          text: 'Suara monitor detak jantung berdengung monoton. Lampu neon rumah sakit berkedip redup di bawah hujan lebat yang menghantam jendela kaca lantai empat.',
+          microSight: null,
+          sprite: { character: null },
+          bgDarken: true
+        },
+        {
+          id: 's1_n2',
+          speaker: 'Narator',
+          title: 'Kilas Balik',
+          text: 'Di genggaman tanganku yang dingin saat itu, selembar surat berkop resmi Senat Mahasiswa basah oleh keringat: "Pencabutan Beasiswa Berprestasi & Pemecatan Akademik atas Pelanggaran Integritas Data".',
+          microSight: null,
+          sprite: { character: null }
+        },
+        {
+          id: 's1_n3',
+          speaker: 'Kael',
+          title: 'Monolog Batin',
+          text: 'Bukan aku yang mencuri kode itu. Dion Pratama yang menyalinnya, dan Aurelia Vanya yang menandatangani berkasnya demi menyelamatkan muka dekanat. Ibuku koma, dan mereka membuangku ke selokan.',
+          microSight: null,
+          sprite: { character: 'Kael', expression: 'calm' }
+        },
+        {
+          id: 's1_n4',
+          speaker: 'Narator',
+          title: 'Enam Bulan Kemudian — Gedung Arsip Forensik Bawah Tanah',
+          text: 'Sekarang, enam bulan berselang. Langkah sepatuku bergema di lantai granit dingin rubanah Menara Gading. Di kerah mantel arangku, tersemat pin perak: Tim Audit Khusus Dewan Pembina Yayasan.',
+          microSight: null,
+          sprite: { character: 'Kael', expression: 'calm' }
+        },
+        {
+          id: 's1_n5',
+          speaker: 'Nadine',
+          title: 'Penjaga Arsip Forensik Data',
+          text: 'Kael? Kamu... kamu benar-benar kembali. Langkahmu terlalu tenang untuk seseorang yang enam bulan lalu dinyatakan "mati secara akademik" oleh gedung ini.',
+          microSight: 'Nadine memegang cangkir teh chamomile; ujung jemarinya sedikit gemetar saat melihat lencana auditor di mantel Kael. Napasnya terhela perlahan—ia lega, namun mencemaskan dinginnya tatapanku.',
+          sprite: { character: 'Nadine', expression: 'shocked' }
+        },
+        {
+          id: 's1_n6',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Bagaimana aku harus menyapanya?',
+          choices: [
+            {
+              text: '"Apakah semua data transaksi dan checksum heksadesimal sudah siap, Nadine? Kita tidak punya banyak waktu."',
+              effects: { coldness: +5, empathy: -5, authority: +5 },
+              insightUnlock: false,
+              toast: 'Kalkulasi Dingin Menguat (+5 Coldness)',
+              nextNode: 's1_choice_cold'
+            },
+            {
+              text: '"Senang melihatmu masih menjaga arsip ini, Nadine. Tehmu harum... mengingatkanku bahwa ada yang belum membeku di sini."',
+              effects: { coldness: -5, empathy: +10, affectionNadine: +10 },
+              insightUnlock: true,
+              toast: 'Resonansi Emosional Nadine Terbuka (+10 Empathy)',
+              nextNode: 's1_choice_warm'
+            }
+          ]
+        },
+        {
+          id: 's1_choice_cold',
+          speaker: 'Nadine',
+          title: 'Penjaga Arsip Forensik Data',
+          text: 'Selalu langsung pada inti persoalan... Matamu sekarang persis seperti es di kaca jendela itu, Kael. Baiklah. Ini drive terenkripsi yang kamu minta. Log pencairan kas Rp40 Juta dan commit curian baris ke-412.',
+          microSight: 'Nadine menunduk menatap lantai. Ia mundur setengah langkah, menyadari jarak tak kasat mata yang sengaja kubangun.',
+          sprite: { character: 'Nadine', expression: 'defensive' },
+          jumpTo: 's1_handover'
+        },
+        {
+          id: 's1_choice_warm',
+          speaker: 'Nadine',
+          title: 'Penjaga Arsip Forensik Data',
+          text: 'Syukurlah... mantelmu mungkin tampak kaku dan dingin, tapi kamu masih Kael yang kukenal. Ini dia drive data lengkapnya. Bahkan aku menyisipkan salinan transaksi pribadi yang disembunyikan Aurelia.',
+          microSight: 'Sudut bibir Nadine terangkat lembut. Detak nadinya menstabil pada 68 bpm. Kepercayaannya padaku pulih sepenuhnya.',
+          sprite: { character: 'Nadine', expression: 'calm' },
+          jumpTo: 's1_handover'
+        },
+        {
+          id: 's1_handover',
+          speaker: 'Nadine',
+          title: 'Penjaga Arsip Forensik Data',
+          text: 'Sidang pleno Senat di lantai empat sedang berlangsung. Dion dan Sera sedang mempresentasikan proposal hibah tambahan Rp40 Juta di depan Aurelia. Ingat, Kael... kendalikan suhu batinmu di atas sana.',
+          microSight: null,
+          sprite: { character: 'Nadine', expression: 'calm' }
+        },
+        {
+          id: 's1_exit',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Buku Besar Kartu Truf sudah terkunci di tanganku. Mari kita lihat seberapa rapuh menara gading mereka saat badai datang dari dalam.',
+          microSight: null,
+          sprite: { character: 'Kael', expression: 'calm' },
+          nextScene: 'scene2'
+        }
+      ],
+
+      // ==================== SCENE 2: RUANG SIDANG UTAMA SENAT (MAIN DEBATE) ====================
+      scene2: [
+        {
+          id: 's2_n1',
+          speaker: 'Narator',
+          title: 'Lantai 4 — Ruang Sidang Utama Senat Mahasiswa',
+          text: 'Pintu ganda berbahan kayu ek terbuka pelan. Udara ruangan beraroma kayu mahoni dan pendingin ruangan yang menusuk. Di balik jendela melengkung tinggi, kilatan petir membelah langit kota.',
+          microSight: null,
+          sprite: { character: null },
+          onEnter: () => triggerLightning()
+        },
+        {
+          id: 's2_n2',
+          speaker: 'Dion',
+          title: 'Ketua BEM / Penggagas Hibah',
+          text: '...karena itulah, rekan-rekan Dewan Senat, dana tambahan Rp40.000.000 untuk lisensi server analitik independen ini mutlak diperlukan sebelum kongres nasional!',
+          microSight: 'Dion memutar cincin emas di jemari kirinya—gestur bawah sadar saat memproyeksikan kepalsuan. Keringat tipis terlihat di pelipis kanannya.',
+          sprite: { character: 'Dion', expression: 'calm' }
+        },
+        {
+          id: 's2_n3',
+          speaker: 'Seraphina',
+          title: 'Bintang Debat Fakultas',
+          text: 'Komisi Etik sudah memeriksa validitas algoritma ini. Kami tidak melihat celah untuk menunda pengesahan, Ketua Aurelia.',
+          microSight: 'Sera berbicara cepat dengan intonasi tinggi, namun matanya terus melirik ke berkas di tangannya—dia tahu arsitektur kode itu bukan miliknya.',
+          sprite: { character: 'Seraphina', expression: 'calm' }
+        },
+        {
+          id: 's2_n4',
+          speaker: 'Aurelia',
+          title: 'Ketua Komisi Etik Senat',
+          text: 'Jika tidak ada sanggahan lebih lanjut dari anggota pleno, maka palu pengesahan—',
+          microSight: 'Tangan kanan Aurelia yang memegang palu kayu bergetar halus. Sorot matanya kosong menatap kertas pengesahan, seolah sedang menghukum dirinya sendiri.',
+          sprite: { character: 'Aurelia', expression: 'calm' }
+        },
+        {
+          id: 's2_n5',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Tahan palu itu, Ketua Aurelia. Hibah empat puluh juta rupiah tidak bisa disahkan untuk sebuah tumpukan kode curian dan rekening cangkang fiktif.',
+          microSight: null,
+          sprite: { character: 'Kael', expression: 'calm' }
+        },
+        {
+          id: 's2_n6',
+          speaker: 'Dion',
+          title: 'Ketua BEM Fakultas',
+          text: 'Kaelen Vance?! Berani sekali kamu menginjakkan kaki di ruang sidang tertutup ini setelah skorsingmu?! Kamu pikir kamu siapa, hah? Kembali meminta belas kasihan?!',
+          microSight: 'Pupil Dion melebar seketika. Suaranya meninggi tiga oktaf untuk menutupi getaran kepanikan primalnya.',
+          sprite: { character: 'Dion', expression: 'shocked' }
+        },
+        {
+          id: 's2_iconic_line',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Kamu merindukan orang yang dulu bisa kamu injak-injak? Sayang sekali, dia sudah mati karena kebaikan hatinya sendiri. Sekarang, bicaralah dengan urusan yang jelas atau silakan pergi.',
+          microSight: 'Seluruh ruangan terdiam membeku. Aurelia menegakkan punggungnya; Seraphina melangkah mundur setengah meter dari podium.',
+          sprite: { character: 'Kael', expression: 'calm' }
+        },
+        {
+          id: 's2_n7',
+          speaker: 'Aurelia',
+          title: 'Ketua Komisi Etik Senat',
+          text: 'Kaelen... pin itu... Dewan Pembina Yayasan memberimu mandat audit investigatif?',
+          microSight: 'Aurelia menatap lencana perak di dadaku. Lapisan es aristokratnya retak seketika; napasnya tercekat sejenak.',
+          sprite: { character: 'Aurelia', expression: 'shocked' }
+        },
+        {
+          id: 's2_n8',
+          speaker: 'Seraphina',
+          title: 'Bintang Debat Fakultas',
+          text: 'Dengar, Kael! Kamu tidak bisa tiba-tiba masuk dan menyebarkan fitnah! Modul analitik sentimen itu hasil riset tim kami selama tiga bulan!',
+          microSight: 'Sera menatap tajam, tapi jari-jarinya meremas map presentasi hingga kertasnya terlipat kusut. Retorikanya mulai bocor.',
+          sprite: { character: 'Seraphina', expression: 'defensive' }
+        },
+        {
+          id: 's2_debate_stage',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Saatnya membongkar pertahanan mereka. Bukti mana yang harus kugunakan untuk mematahkan klaim orisinalitas Sera dan Dion?',
+          choices: [
+            {
+              text: 'Tampilkan [BUKTI 01]: Sorot Checksum Baris ke-412 di layar proyektor sidang.',
+              effects: { coldness: +5, authority: +10, resonance: +5 },
+              toast: 'Skakmat Logis: Baris ke-412 Terekspos!',
+              nextNode: 's2_checksum_reveal'
+            },
+            {
+              text: 'Konfrontasi Sera secara psikologis: Tanyakan kapan dia menulis rekursi matriks kovarians tanpa bantuan Kael.',
+              effects: { empathy: +5, resonance: +10, affectionSera: +5 },
+              toast: 'Tekanan Retorika: Memecah Ego Sera!',
+              nextNode: 's2_sera_break'
+            }
+          ]
+        },
+        {
+          id: 's2_checksum_reveal',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Silakan lihat layar utama, Anggota Dewan. Repository kalian menggunakan fungsi hashing yang menyisipkan string pribadi "KV-2025-ALPHA" pada baris 412. Kalian bahkan terlalu malas untuk menghapus tanda tangan kode milikku saat mencurinya.',
+          microSight: 'Sera terhuyung satu langkah ke belakang. Wajahnya memucat pasi. Dion memukul meja dengan kepalan tangan yang berkeringat.',
+          sprite: { character: 'Seraphina', expression: 'cornered' }
+        },
+        {
+          id: 's2_sera_break',
+          speaker: 'Seraphina',
+          title: 'Bintang Debat Fakultas',
+          text: 'A-aku... itu... Dion bilang kode itu open-source berlisensi bebas! Aku tidak tahu kalau itu—',
+          microSight: 'Sera mengalihkan pandangannya dari Dion. Aliansi mereka retak di hadapan publik; dia mencari jalan keluar dari jurang kehancuran karirnya.',
+          sprite: { character: 'Seraphina', expression: 'guilt' }
+        },
+        {
+          id: 's2_dion_cornered',
+          speaker: 'Dion',
+          title: 'Ketua BEM Fakultas',
+          text: 'Tutup mulutmu, Sera! Kaelen, kamu pikir potongan kode usang ini cukup untuk membatalkan keputusan Senat?! Aurelia, ketuk palunya sekarang juga!',
+          microSight: 'Dion panik total. Urat lehernya menegang; dia menatap Aurelia dengan tatapan mengancam, menuntut pelunasan utang politik keluarga Rajasa.',
+          sprite: { character: 'Dion', expression: 'cornered' }
+        },
+        {
+          id: 's2_climax_choice',
+          speaker: 'Kael',
+          title: 'Keputusan Krusial: Deploy Kartu Truf [BUKTI 02]',
+          text: 'Di tanganku ada [BUKTI 02]—Log Pencairan Kas Senat Rp40 Juta ke rekening kerabat Dion. Bagaimana aku akan mengeksekusi akhir sidang ini?',
+          choices: [
+            {
+              text: '[BURN LEVERAGE — Skakmat Publik Mutlak] Umumkan rekening korupsi Dion di depan seluruh delegasi, bekukan dana secara permanen, dan hancurkan kariernya seketika!',
+              effects: { coldness: +20, authority: +25, empathy: -15 },
+              leverageBurnt: true,
+              toast: '⚡ BURN LEVERAGE DIEKSEKUSI! (+25 Otoritas, +20 Dingin)',
+              sound: 'glassShatter',
+              nextNode: 's2_climax_burn'
+            },
+            {
+              text: '[HOLD AS SHIELD — Tekanan Tertutup] Bekukan pencairan sementara atas otoritas audit Yayasan, simpan bukti rekening sebagai sandera, dan beri ruang bagi Aurelia & Sera.',
+              effects: { coldness: -5, empathy: +15, resonance: +10, authority: +10 },
+              leverageBurnt: false,
+              toast: '🛡️ HOLD AS SHIELD: Menahan Bukti Demi Penyelidikan (+15 Empati)',
+              sound: 'heartbeat',
+              nextNode: 's2_climax_hold'
+            }
+          ]
+        },
+        {
+          id: 's2_climax_burn',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Sidang ini selesai. Invoice fiktif INV-SENAT-2026-088 atas nama paman kandungmu sudah kuserahkan ke Kejaksaan Kampus. Mulai detik ini, rekening Senat dibekukan, dan kamu dipecat dari jabatanmu.',
+          microSight: 'Dion ambruk ke kursinya dengan tatapan nanar. Aurelia menutup matanya rapat-rapat, sementara gumam histeris memenuhi seisi ruang sidang.',
+          sprite: { character: 'Dion', expression: 'cornered' },
+          nextScene: 'scene3_hub'
+        },
+        {
+          id: 's2_climax_hold',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Berdasarkan wewenang Pasal 12 Statuta Yayasan, pencairan dana Rp40 Juta ini dibekukan di bawah pengawasanku langsung sampai audit forensik selesai. Sidang dibubarkan.',
+          microSight: 'Aurelia menatapku dengan tatapan bergetar penuh tanya; Sera menatap lantai dengan air mata yang ditahannya. Dion terperangkap dalam ketakutan tak berujung.',
+          sprite: { character: 'Aurelia', expression: 'guilt' },
+          nextScene: 'scene3_hub'
+        }
+      ],
+
+      // ==================== SCENE 3: RETAKAN DI KORIDOR HUJAN (BRANCHING) ====================
+      scene3_hub: [
+        {
+          id: 's3_hub_n1',
+          speaker: 'Narator',
+          title: 'Koridor Menara Gading yang Lengang',
+          text: 'Sidang telah usai. Ruang pleno dikosongkan. Suara gemuruh petir dan rintik hujan di kaca koridor terasa lebih dekat, memantulkan bayangan bayang-bayang di dinding marmer.',
+          microSight: null,
+          sprite: { character: null }
+        },
+        {
+          id: 's3_hub_choice',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Pencairan dana telah kubekukan. Namun gema dari masa lalu belum tuntas diselesaikan. Ke mana langkahku harus tertuju malam ini?',
+          choices: [
+            {
+              text: 'Temui Aurelia Vanya di balkon barat yang basah oleh tempias hujan.',
+              effects: { affectionAurelia: +10 },
+              toast: 'Rute Aurelia: Misteri Pembayaran ICU',
+              nextNode: 'route_aurelia_start'
+            },
+            {
+              text: 'Hadapi Seraphina di ruang debat kosong tempat ia menungguku.',
+              effects: { affectionSera: +10 },
+              toast: 'Rute Seraphina: Pembelot yang Terpojok',
+              nextNode: 'route_sera_start'
+            },
+            {
+              text: 'Kembali ke kehangatan arsip bawah tanah bersama Nadine Larasati.',
+              effects: { affectionNadine: +15 },
+              toast: 'Rute Nadine: Melepas Topeng Auditor',
+              nextNode: 'route_nadine_start'
+            }
+          ]
+        }
+      ],
+
+      // ----- ROUTE A: AURELIA VANYA RAJASA -----
+      route_aurelia: [
+        {
+          id: 'route_aurelia_start',
+          speaker: 'Narator',
+          title: 'Balkon Barat — Menghadap Taman Basah',
+          text: 'Aurelia berdiri di dekat pagar marmer. Angin dingin meniup ujung rambut hitamnya yang tergerai. Di tangannya, cangkir porselen bergetar pelan.',
+          microSight: 'Bahu Aurelia sedikit membungkuk—sikap tubuh yang tidak pernah ia tunjukkan di ruang sidang. Seluruh arogansi darah birunya runtuh di hadapan dinginnya malam.',
+          sprite: { character: 'Aurelia', expression: 'guilt' }
+        },
+        {
+          id: 'route_aurelia_n2',
+          speaker: 'Aurelia',
+          title: 'Ketua Komisi Etik Senat',
+          text: 'Kamu datang untuk menagih balas dendammu, Kael? Atau untuk melihat betapa menyedihkannya aku setelah kamu melucuti wewenang Senatku?',
+          microSight: 'Napasnya bergetar pelan. Jemarinya mencengkeram erat marmer balkon hingga buku-buku jarinya memutih.',
+          sprite: { character: 'Aurelia', expression: 'cornered' }
+        },
+        {
+          id: 'route_aurelia_n3',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Aku mengeluarkan dokumen [BUKTI 03] dari kantong dalam mantelku dan meletakkannya di atas pagar marmer di hadapannya.',
+          microSight: null,
+          sprite: { character: 'Kael', expression: 'calm' }
+        },
+        {
+          id: 'route_aurelia_n4',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Tanda tanganmu ada di surat pemecatanku enam bulan lalu. Tapi bukti transfer Rp25 Juta ke rekening ICU Rumah Sakit ibuku pada malam yang sama... dikirim dari rekening pribadi Aurelia Vanya Rajasa.',
+          microSight: 'Aurelia tersentak mundur seolah terkena sengatan listrik. Matanya terbelalak menatap lembar kertas transfer rahasia itu.',
+          sprite: { character: 'Aurelia', expression: 'shocked' }
+        },
+        {
+          id: 'route_aurelia_n5',
+          speaker: 'Aurelia',
+          title: 'Ketua Komisi Etik Senat',
+          text: 'Dion memegang dokumen pemerasan terhadap posisi dekanat ayahku... Aku tidak punya pilihan lain selain menandatanganinya! Tapi aku tidak bisa membiarkan ibumu mati karena kejahatan yang tidak kamu perbuat...',
+          microSight: 'Air mata menggenang di pelupuk mata Aurelia, namun ia menolak menjatuhkannya demi sisa harga dirinya.',
+          sprite: { character: 'Aurelia', expression: 'guilt' }
+        },
+        {
+          id: 'route_aurelia_choice',
+          speaker: 'Kael',
+          title: 'Keputusan Relasi: Aurelia',
+          text: 'Bagaimana aku menanggapi pengakuan rahasia Ketua Komisi Etik ini?',
+          choices: [
+            {
+              text: '"Uang tebusan tidak menghapus dosa kepatuhanmu, Aurelia. Tapi itu membuktikan kamu masih manusia. Bersamaku, bersihkan Menara Gading ini."',
+              effects: { empathy: +15, coldness: -10, affectionAurelia: +25 },
+              toast: 'Aliansi Rahasia Terbentuk (+25 Aurelia Affection)',
+              nextNode: 'route_aurelia_mercy'
+            },
+            {
+              text: '"Kebaikan rahasiamu adalah bentuk pengecut paling sempurna. Kamu membeli ketenangan batinmu dengan uang saku aristokratmu."',
+              effects: { coldness: +15, empathy: -10, authority: +10 },
+              toast: 'Kalkulasi Mutlak: Aurelia Tertunduk Beku',
+              nextNode: 'route_aurelia_cold'
+            }
+          ]
+        },
+        {
+          id: 'route_aurelia_mercy',
+          speaker: 'Aurelia',
+          title: 'Ketua Komisi Etik Senat',
+          text: 'Kael... terima kasih. Jika kamu butuh kunci arsip khusus dekanat untuk membongkar faksi Dion hingga ke akar-akarnya, aku akan menjadi sekutumu.',
+          microSight: 'Ketegangan di pundak Aurelia mereda. Untuk pertama kalinya dalam enam bulan, senyum tipis yang tulus tersungging di bibirnya.',
+          sprite: { character: 'Aurelia', expression: 'calm' },
+          nextScene: 'scene4'
+        },
+        {
+          id: 'route_aurelia_cold',
+          speaker: 'Aurelia',
+          title: 'Ketua Komisi Etik Senat',
+          text: 'Mungkin kamu benar... Hukumlah aku semaumu, Auditor Vance. Tapi ketahuilah, menara ini akan menuntut jiwamu jika kamu terus membiarkan hatimu membeku.',
+          microSight: 'Aurelia memalingkan wajahnya menatap hujan malam. Hubungan kami terkunci dalam batas formalitas audit yang dingin.',
+          sprite: { character: 'Aurelia', expression: 'defensive' },
+          nextScene: 'scene4'
+        }
+      ],
+
+      // ----- ROUTE B: SERAPHINA KIRANA -----
+      route_seraphina: [
+        {
+          id: 'route_sera_start',
+          speaker: 'Narator',
+          title: 'Ruang Debat Fakultas — Sepi & Gelap',
+          text: 'Podium kayu jati tempat piala-piala berkilau terasa seperti penjara kosong. Seraphina duduk di sudut anak tangga panggung, mantelnya tergeletak di sampingnya.',
+          microSight: 'Sera memeluk lututnya; getaran halus terlihat pada ujung jari-jarinya. Citra debater tak terkalahkan miliknya telah hancur lebur.',
+          sprite: { character: 'Seraphina', expression: 'cornered' }
+        },
+        {
+          id: 'route_sera_n2',
+          speaker: 'Seraphina',
+          title: 'Bintang Debat Fakultas',
+          text: 'Puas sekarang, Kael? Dalam satu jam, kamu menghancurkan semua reputasi yang kubangun selama dua tahun dengan keringat dan air mata...',
+          microSight: 'Kemarahan di suaranya hanyalah tameng tipis yang menutupi rasa takut kehilangan beasiswa dan masa depannya.',
+          sprite: { character: 'Seraphina', expression: 'defensive' }
+        },
+        {
+          id: 'route_sera_n3',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Kamu membangun reputasimu di atas batu nisan akademis milikku, Sera. Kamu tahu algoritma rekursif itu milikku, tapi kamu tetap mempresentasikan karya curian itu demi medali emasmu.',
+          microSight: 'Sera menggigit bibir bawahnya hingga nyaris berdarah. Dia tidak mampu menatap mataku.',
+          sprite: { character: 'Kael', expression: 'calm' }
+        },
+        {
+          id: 'route_sera_n4',
+          speaker: 'Seraphina',
+          title: 'Bintang Debat Fakultas',
+          text: 'Dion mengancam akan mencoret namaku dari tim delegasi internasional jika aku menolak! Tolong, Kael... jangan laporkan keterlibatanku ke rektorat. Aku punya rekaman pesan suara saat Dion merencanakan pengalihan dana itu!',
+          microSight: 'Sera mengangkat kepalanya; tatapan putus asa dan ketergantungan terpancar jelas. Dia menawarkan dirinya sebagai pion demi bertahan hidup.',
+          sprite: { character: 'Seraphina', expression: 'guilt' }
+        },
+        {
+          id: 'route_sera_choice',
+          speaker: 'Kael',
+          title: 'Keputusan Relasi: Seraphina',
+          text: 'Bagaimana aku memposisikan sang Bintang Debat yang kini berlutut?',
+          choices: [
+            {
+              text: '"Berikan rekaman itu padaku. Gunakan bakat retorikamu untuk mengatakan kebenaran di sidang etik besok, dan aku akan melindungimu dari pemecatan."',
+              effects: { empathy: +10, resonance: +10, affectionSera: +25 },
+              toast: 'Penebusan Sera Dimulai (+25 Sera Affection)',
+              nextNode: 'route_sera_redemption'
+            },
+            {
+              text: '"Kamu hanyalah tentara bayaran yang berpindah majikan saat terpojok. Serahkan buktinya, tapi jangan harap ada pengampunan khusus."',
+              effects: { coldness: +15, authority: +15, empathy: -10 },
+              toast: 'Kepatuhan Mutlak: Sera Ditundukkan',
+              nextNode: 'route_sera_subjugate'
+            }
+          ]
+        },
+        {
+          id: 'route_sera_redemption',
+          speaker: 'Seraphina',
+          title: 'Bintang Debat Fakultas',
+          text: 'Aku berjanji, Kael. Besok pagi, aku sendiri yang akan membongkar kebohongan Dion di podium. Terima kasih... karena tidak membuangku ke kegelapan yang sama.',
+          microSight: 'Napas lega Sera terdengar jelas. Ia menatap Kael bukan lagi sebagai rival yang dibenci, melainkan sosok penentu arah hidupnya.',
+          sprite: { character: 'Seraphina', expression: 'calm' },
+          nextScene: 'scene4'
+        },
+        {
+          id: 'route_sera_subjugate',
+          speaker: 'Seraphina',
+          title: 'Bintang Debat Fakultas',
+          text: 'Baik... Ini sandi akses audionya. Ambil semuanya. Ternyata kamu jauh lebih kejam dan mengerikan daripada Dion...',
+          microSight: 'Sera menatap Kael dengan ketakutan mendalam. Batas antara rasa hormat dan teror telah lenyap.',
+          sprite: { character: 'Seraphina', expression: 'cornered' },
+          nextScene: 'scene4'
+        }
+      ],
+
+      // ----- ROUTE C: NADINE LARASATI -----
+      route_nadine: [
+        {
+          id: 'route_nadine_start',
+          speaker: 'Narator',
+          title: 'Arsip Bawah Tanah — Suara Desir Hujan Terdengar Redup',
+          text: 'Suara dengung server komputer terasa menenangkan setelah badai politik di lantai atas. Di atas meja kerja Nadine, dua cangkir teh chamomile mengepulkan uap hangat.',
+          microSight: 'Nadine tersenyum tulus saat melihat bayanganku di pintu kaca arsip. Detak jantungnya lambat dan tenang—suaka sejati di tengah kekacauan menara.',
+          sprite: { character: 'Nadine', expression: 'calm' }
+        },
+        {
+          id: 'route_nadine_n2',
+          speaker: 'Nadine',
+          title: 'Penjaga Arsip Forensik Data',
+          text: 'Duduklah, Kael. Berita pembekuan dana di ruang sidang sudah sampai ke rubanah. Kamu berhasil membuat seisi Menara Gading gemetar.',
+          microSight: 'Ia mendorong cangkir teh porselen ke hadapanku. Matanya yang jernih di balik kacamata perak mengamati setiap garis lelah di wajahku.',
+          sprite: { character: 'Nadine', expression: 'calm' }
+        },
+        {
+          id: 'route_nadine_n3',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Ini baru langkah pertama, Nadine. Dion masih memiliki koneksi di tingkat rektorat, dan sistem ini dirancang untuk melindungi mereka yang berkuasa.',
+          microSight: null,
+          sprite: { character: 'Kael', expression: 'calm' }
+        },
+        {
+          id: 'route_nadine_n4',
+          speaker: 'Nadine',
+          title: 'Penjaga Arsip Forensik Data',
+          text: 'Tugasmu selesai untuk malam ini, Kael. Lepaskan topeng auditor dinginmu itu selama lima menit... sebelum kamu lupa bagaimana rasanya bernapas sebagai manusia.',
+          microSight: 'Nadine menyentuh punggung tanganku yang dingin. Kehangatan jari-jarinya menembus udara ruangan yang beku.',
+          sprite: { character: 'Nadine', expression: 'calm' }
+        },
+        {
+          id: 'route_nadine_choice',
+          speaker: 'Kael',
+          title: 'Keputusan Relasi: Nadine',
+          text: 'Bagaimana aku merespons kehangatan Nadine di tempat paling sunyi ini?',
+          choices: [
+            {
+              text: 'Kulepas kacamata titaniumku, menghela napas panjang, dan meminum tehnya: "Terima kasih, Nadine... tanpamu, aku mungkin sudah menjadi monster seutuhnya."',
+              effects: { empathy: +20, coldness: -15, affectionNadine: +25 },
+              toast: 'Jangkar Kemanusiaan Dipulihkan (+25 Nadine Affection)',
+              nextNode: 'route_nadine_heart'
+            },
+            {
+              text: '"Topeng ini adalah pelindungku, Nadine. Begitu aku menurunkannya, mereka akan menemukan celah untuk menghancurkanku lagi."',
+              effects: { coldness: +10, authority: +10, empathy: -5 },
+              toast: 'Kalkulasi Tetap Terpasang (+10 Coldness)',
+              nextNode: 'route_nadine_guarded'
+            }
+          ]
+        },
+        {
+          id: 'route_nadine_heart',
+          speaker: 'Nadine',
+          title: 'Penjaga Arsip Forensik Data',
+          text: 'Kamu tidak akan menjadi monster, Kael. Selama kamu masih kembali ke ruangan ini, aku akan selalu menjadi cermin yang mengingatkan siapa dirimu sebenarnya.',
+          microSight: 'Sorot mata Nadine berbinar lembut. Rasa aman dan keterikatan batin kami mengunci kehangatan di tengah badai malam.',
+          sprite: { character: 'Nadine', expression: 'calm' },
+          nextScene: 'scene4'
+        },
+        {
+          id: 'route_nadine_guarded',
+          speaker: 'Nadine',
+          title: 'Penjaga Arsip Forensik Data',
+          text: 'Jika itu pilihanmu untuk bertahan hidup, aku akan menghormatinya. Tapi minumlah tehnya sebelum dingin... Ruangan ini butuh sedikit kehangatan.',
+          microSight: 'Nadine menghela napas pelan dengan senyum penuh pengertian. Ia tetap menjadi pelabuhan setiaku.',
+          sprite: { character: 'Nadine', expression: 'calm' },
+          nextScene: 'scene4'
+        }
+      ],
+
+      // ==================== SCENE 4: EVALUASI TEMPERATUR BATIN (SUMMARY) ====================
+      scene4: [
+        {
+          id: 's4_n1',
+          speaker: 'Kael',
+          title: 'Special Auditor Yayasan',
+          text: 'Malam semakin larut. Laporan audit Bab 1 telah difinalisasi dan disegel dengan kode verifikasi Dewan Pembina Yayasan. Saatnya memeriksa neraca psikologis batinku.',
+          microSight: null,
+          sprite: { character: 'Kael', expression: 'calm' },
+          onEnter: () => showEndingReport()
+        }
+      ]
+    };
+
+    /* =========================================================================
+       6. DIALOGUE SYSTEM & TYPEWRITER ENGINE
+       ========================================================================= */
+    function getCurrentNode() {
+      const scene = STORY_DATABASE[State.currentSceneId];
+      if (!scene || State.currentNodeIndex >= scene.length) return null;
+      return scene[State.currentNodeIndex];
+    }
+
+    function renderCurrentDialogue() {
+      const node = getCurrentNode();
+      if (!node) return;
+
+      if (node.onEnter) node.onEnter();
+
+      // Update Top Scene Badge
+      const sceneTitleMap = {
+        scene1: 'Prolog: Bayangan di Balik Kaca',
+        scene2: 'Bab 1: Variabel Keempat yang Hilang',
+        scene3_hub: 'Bab 1: Retakan di Koridor Hujan',
+        route_aurelia: 'Bab 1: Rute Aurelia — Balik Tabir Penebusan',
+        route_seraphina: 'Bab 1: Rute Seraphina — Retorika yang Tunduk',
+        route_nadine: 'Bab 1: Rute Nadine — Di Bawah Suaka Rubanah',
+        scene4: 'Bab 1: Evaluasi Temperatur Batin'
+      };
+      document.getElementById('sceneTitleText').innerText = sceneTitleMap[State.currentSceneId] || 'Sidang Berlangsung';
+
+      // Update Speaker details
+      State.activeSpeaker = node.speaker;
+      document.getElementById('speakerName').innerText = node.speaker;
+      document.getElementById('speakerTitle').innerText = node.title || 'Subjek Sidang';
+
+      const colorMap = {
+        Kael: '#38bdf8',
+        Aurelia: '#c084fc',
+        Seraphina: '#fbbf24',
+        Nadine: '#34d399',
+        Dion: '#f43f5e',
+        Narator: '#94a3b8'
+      };
+      const badge = document.getElementById('speakerBadgeColor');
+      badge.style.backgroundColor = colorMap[node.speaker] || '#38bdf8';
+      badge.style.boxShadow = `0 0 10px ${colorMap[node.speaker] || '#38bdf8'}`;
+
+      // Update Micro-Expression Sight Box
+      const sightBox = document.getElementById('microSightBox');
+      const sightText = document.getElementById('microSightText');
+      if (node.microSight && State.resonance >= 40) {
+        sightText.innerText = node.microSight;
+        sightBox.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
+        sightBox.classList.add('opacity-100', 'translate-y-0');
+        audio.playHeartbeat();
+      } else {
+        sightBox.classList.remove('opacity-100', 'translate-y-0');
+        sightBox.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+      }
+
+      // Update Character Sprites on Stage
+      updateCharacterSprites(node.sprite, node.speaker);
+
+      // Render Dialogue with Typewriter
+      startTypewriter(node.text, () => {
+        // Callback when typewriter finishes
+        if (node.choices && node.choices.length > 0) {
+          renderChoices(node.choices);
+        } else {
+          document.getElementById('dialoguePrompt').classList.remove('hidden');
+          if (State.autoPlay) {
+            State.autoPlayTimer = setTimeout(advanceDialogue, 2800);
+          }
+        }
+      });
+
+      // Add to History
+      State.history.push({
+        speaker: node.speaker,
+        title: node.title,
+        text: node.text
+      });
+      updateBacklogUI();
+    }
+
+    function startTypewriter(text, onComplete) {
+      clearTimeout(State.typewriterTimeout);
+      clearTimeout(State.autoPlayTimer);
+      State.isTyping = true;
+      State.fullCurrentText = text;
+
+      const el = document.getElementById('dialogueText');
+      const prompt = document.getElementById('dialoguePrompt');
+      const choicesEl = document.getElementById('choicesContainer');
+      prompt.classList.add('hidden');
+      choicesEl.classList.add('hidden');
+      choicesEl.innerHTML = '';
+      el.innerText = '';
+
+      let i = 0;
+      function step() {
+        if (!State.isTyping) {
+          el.innerText = text;
+          if (onComplete) onComplete();
+          return;
+        }
+
+        if (i < text.length) {
+          el.innerText += text.charAt(i);
+          if (i % 2 === 0) audio.playTypewriter(State.activeSpeaker);
+          i++;
+          State.typewriterTimeout = setTimeout(step, 20);
+        } else {
+          State.isTyping = false;
+          if (onComplete) onComplete();
+        }
+      }
+      step();
+    }
+
+    function skipTypewriter() {
+      if (State.isTyping) {
+        State.isTyping = false;
+        clearTimeout(State.typewriterTimeout);
+        document.getElementById('dialogueText').innerText = State.fullCurrentText;
+        const node = getCurrentNode();
+        if (node && node.choices && node.choices.length > 0) {
+          renderChoices(node.choices);
+        } else {
+          document.getElementById('dialoguePrompt').classList.remove('hidden');
+        }
+      }
+    }
+
+    function renderChoices(choices) {
+      const container = document.getElementById('choicesContainer');
+      container.innerHTML = '';
+      container.classList.remove('hidden');
+      document.getElementById('dialoguePrompt').classList.add('hidden');
+
+      choices.forEach((choice, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full text-left p-3 rounded-lg glass-panel hover:border-cyan-400/80 hover:bg-cyan-950/40 text-xs md:text-sm text-slate-100 transition-all duration-200 transform hover:translate-x-1 border border-slate-700/60 shadow-md group flex items-start gap-2.5';
+        
+        btn.innerHTML = `
+          <span class="text-cyan-400 font-mono-code font-bold pt-0.5 group-hover:scale-110 transition-transform">0${index+1}</span>
+          <span class="flex-1">${choice.text}</span>
+          <span class="text-slate-500 group-hover:text-cyan-300 font-mono-code text-xs transition">PILIH →</span>
+        `;
+
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          audio.playChime();
+          if (choice.sound === 'glassShatter') {
+            audio.playGlassShatter();
+            document.body.classList.add('shatter-shake');
+            setTimeout(() => document.body.classList.remove('shatter-shake'), 500);
+          } else if (choice.sound === 'heartbeat') {
+            audio.playHeartbeat();
+          }
+
+          // Apply stat effects
+          if (choice.effects) {
+            applyStatEffects(choice.effects);
+          }
+          if (choice.toast) {
+            showToast(choice.toast);
+          }
+          if (choice.leverageBurnt !== undefined) {
+            State.leverageBurnt = choice.leverageBurnt;
+          }
+
+          // Move to next node
+          if (choice.nextNode) {
+            jumpToNodeById(choice.nextNode);
+          } else {
+            advanceDialogue();
+          }
+        };
+
+        container.appendChild(btn);
+      });
+    }
+
+    function jumpToNodeById(targetId) {
+      // Search in current scene first
+      const scene = STORY_DATABASE[State.currentSceneId];
+      const idx = scene.findIndex(n => n.id === targetId);
+      if (idx !== -1) {
+        State.currentNodeIndex = idx;
+        renderCurrentDialogue();
+        return;
+      }
+      // Search across all scenes
+      for (const scId in STORY_DATABASE) {
+        const found = STORY_DATABASE[scId].findIndex(n => n.id === targetId);
+        if (found !== -1) {
+          State.currentSceneId = scId;
+          State.currentNodeIndex = found;
+          renderCurrentDialogue();
+          return;
+        }
+      }
+    }
+
+    function advanceDialogue() {
+      if (State.isTyping) {
+        skipTypewriter();
+        return;
+      }
+
+      const node = getCurrentNode();
+      if (!node) return;
+
+      // Check if choices are pending
+      if (node.choices && node.choices.length > 0) return;
+
+      // Handle direct jumps or next scene
+      if (node.jumpTo) {
+        jumpToNodeById(node.jumpTo);
+        return;
+      }
+
+      if (node.nextScene) {
+        jumpToScene(node.nextScene);
+        return;
+      }
+
+      const scene = STORY_DATABASE[State.currentSceneId];
+      if (State.currentNodeIndex < scene.length - 1) {
+        State.currentNodeIndex++;
+        renderCurrentDialogue();
+      } else {
+        // End of scene
+        if (State.currentSceneId === 'scene1') jumpToScene('scene2');
+        else if (State.currentSceneId === 'scene2') jumpToScene('scene3_hub');
+        else if (State.currentSceneId.startsWith('route_')) jumpToScene('scene4');
+      }
+    }
+
+    function jumpToScene(sceneId) {
+      if (sceneId === 'scene3_hub') {
+        State.currentSceneId = 'scene3_hub';
+        State.currentNodeIndex = 0;
+      } else if (sceneId === 'route_aurelia_start') {
+        State.currentSceneId = 'route_aurelia';
+        State.currentNodeIndex = 0;
+      } else if (sceneId === 'route_sera_start') {
+        State.currentSceneId = 'route_seraphina';
+        State.currentNodeIndex = 0;
+      } else if (sceneId === 'route_nadine_start') {
+        State.currentSceneId = 'route_nadine';
+        State.currentNodeIndex = 0;
+      } else if (STORY_DATABASE[sceneId]) {
+        State.currentSceneId = sceneId;
+        State.currentNodeIndex = 0;
+      }
+      closeSceneJumpModal();
+      renderCurrentDialogue();
+    }
+
+    /* =========================================================================
+       7. STAT MANAGEMENT & THERMOMETER HUD
+       ========================================================================= */
+    function applyStatEffects(effects) {
+      if (effects.coldness) State.coldness = Math.min(100, Math.max(0, State.coldness + effects.coldness));
+      if (effects.empathy) State.empathy = Math.min(100, Math.max(0, State.empathy + effects.empathy));
+      if (effects.authority) State.authority = Math.min(100, Math.max(0, State.authority + effects.authority));
+      if (effects.resonance) State.resonance = Math.min(100, Math.max(0, State.resonance + effects.resonance));
+      
+      if (effects.affectionAurelia) State.affection.aurelia = Math.min(100, Math.max(0, State.affection.aurelia + effects.affectionAurelia));
+      if (effects.affectionSera) State.affection.seraphina = Math.min(100, Math.max(0, State.affection.seraphina + effects.affectionSera));
+      if (effects.affectionNadine) State.affection.nadine = Math.min(100, Math.max(0, State.affection.nadine + effects.affectionNadine));
+
+      updateHUD();
+    }
+
+    function updateHUD() {
+      document.getElementById('coldnessVal').innerText = `${State.coldness}%`;
+      document.getElementById('empathyVal').innerText = `${State.empathy}%`;
+      document.getElementById('authorityVal').innerText = `${State.authority}%`;
+      document.getElementById('resonanceVal').innerText = `${State.resonance}%`;
+
+      // Thermometer Bar Fill & Label
+      const bar = document.getElementById('thermometerBar');
+      bar.style.width = `${State.coldness}%`;
+
+      const stateLabel = document.getElementById('psycheStateLabel');
+      if (State.coldness >= 80) {
+        stateLabel.innerText = 'Titik Beku Mutlak (Absolute Zero)';
+        stateLabel.className = 'text-cyan-200 font-serif-title tracking-wider px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-400 shadow-[0_0_12px_rgba(56,189,248,0.4)]';
+      } else if (State.coldness >= 60) {
+        stateLabel.innerText = 'Kalkulasi Rasional';
+        stateLabel.className = 'text-sky-300 font-serif-title tracking-wider px-2 py-0.5 rounded bg-slate-900/60 border border-slate-700/50';
+      } else if (State.empathy >= 55) {
+        stateLabel.innerText = 'Tempered Glass (Kemanusiaan)';
+        stateLabel.className = 'text-amber-200 font-serif-title tracking-wider px-2 py-0.5 rounded bg-amber-950/70 border border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.3)]';
+      } else {
+        stateLabel.innerText = 'Ekuilibrium Dingin';
+        stateLabel.className = 'text-slate-300 font-serif-title tracking-wider px-2 py-0.5 rounded bg-slate-900/60 border border-slate-700/50';
+      }
+
+      // Dynamic Frost Vignette scaling when Coldness > 75%
+      const frost = document.getElementById('frostVignette');
+      if (State.coldness > 75) {
+        const opacity = ((State.coldness - 75) / 25) * 0.95;
+        frost.style.opacity = opacity.toFixed(2);
+      } else {
+        frost.style.opacity = '0';
+      }
+
+      // Resonance Indicator
+      const resIndicator = document.getElementById('sightActiveIndicator');
+      if (State.resonance >= 40) {
+        resIndicator.classList.remove('bg-slate-600');
+        resIndicator.classList.add('bg-emerald-400', 'animate-pulse');
+      } else {
+        resIndicator.classList.remove('bg-emerald-400', 'animate-pulse');
+        resIndicator.classList.add('bg-slate-600');
+      }
+
+      // Update Codex Relations
+      document.getElementById('codexRelAurelia').innerText = State.affection.aurelia >= 50 ? 'Sekutu Rahasia (55%)' : 'Rasa Bersalah Terpendam';
+      document.getElementById('codexRelSeraphina').innerText = State.affection.seraphina >= 40 ? 'Penebusan & Pembelot (45%)' : 'Arogansi Defensif';
+      document.getElementById('codexRelNadine').innerText = `Suaka Teduh (${State.affection.nadine}%)`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastMessage').innerText = message;
+      toast.classList.remove('opacity-0', '-translate-y-4');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-4');
+      }, 3200);
+    }
+
+    /* =========================================================================
+       8. CHARACTER SPRITE RENDERER & ACTIVE SPEAKER HIGHLIGHTING
+       ========================================================================= */
+    function updateCharacterSprites(spriteData, activeSpeaker) {
+      const allSprites = {
+        Aurelia: document.getElementById('spriteAurelia'),
+        Seraphina: document.getElementById('spriteSeraphina'),
+        Nadine: document.getElementById('spriteNadine'),
+        Dion: document.getElementById('spriteDion'),
+        Kael: document.getElementById('spriteKael')
+      };
+
+      // Hide all first
+      Object.keys(allSprites).forEach(char => {
+        const el = allSprites[char];
+        el.className = 'sprite-container sprite-hidden absolute bottom-0 flex items-end justify-center';
+      });
+
+      if (!spriteData || !spriteData.character) return;
+
+      const charName = spriteData.character;
+      const expression = spriteData.expression || 'calm';
+      const targetEl = allSprites[charName];
+
+      if (targetEl && CharacterSVGs[charName]) {
+        const svgWrapper = targetEl.querySelector('.sprite-svg-wrapper');
+        svgWrapper.innerHTML = CharacterSVGs[charName](expression);
+
+        // Highlight if active speaker
+        const isSpeaker = (activeSpeaker === charName);
+        targetEl.className = `sprite-container ${isSpeaker ? 'sprite-active' : 'sprite-inactive'} absolute bottom-0 flex items-end justify-center`;
+      }
+    }
+
+    // Populate Codex Avatars on load
+    function initCodexAvatars() {
+      document.getElementById('codexAvatarAurelia').innerHTML = CharacterSVGs.Aurelia('calm');
+      document.getElementById('codexAvatarSeraphina').innerHTML = CharacterSVGs.Seraphina('calm');
+      document.getElementById('codexAvatarNadine').innerHTML = CharacterSVGs.Nadine('calm');
+    }
+
+    /* =========================================================================
+       9. MODAL HANDLERS & BACKLOG
+       ========================================================================= */
+    function updateBacklogUI() {
+      const container = document.getElementById('backlogContent');
+      container.innerHTML = '';
+      State.history.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'p-2 rounded glass-panel border border-slate-800';
+        div.innerHTML = `
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-bold text-cyan-300 font-mono-code">${item.speaker}</span>
+            <span class="text-[10px] text-slate-500 font-mono-code">${item.title || ''}</span>
+          </div>
+          <p class="text-slate-200">${item.text}</p>
+        `;
+        container.appendChild(div);
+      });
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Modal Toggles
+    const modalLedger = document.getElementById('modalLedger');
+    const drawerContent = document.getElementById('drawerLedgerContent');
+    const modalCodex = document.getElementById('modalCodex');
+    const modalBacklog = document.getElementById('modalBacklog');
+    const modalSceneJump = document.getElementById('modalSceneJump');
+    const modalEnding = document.getElementById('modalEndingReport');
+
+    document.getElementById('btnOpenLedger').onclick = () => {
+      audio.playChime();
+      modalLedger.classList.remove('opacity-0', 'pointer-events-none');
+      drawerContent.classList.remove('translate-x-full');
+    };
+    document.getElementById('btnCloseLedger').onclick = () => {
+      modalLedger.classList.add('opacity-0', 'pointer-events-none');
+      drawerContent.classList.add('translate-x-full');
+    };
+
+    document.getElementById('btnOpenCodex').onclick = () => {
+      audio.playChime();
+      modalCodex.classList.remove('opacity-0', 'pointer-events-none');
+    };
+    document.getElementById('btnTitleCodex').onclick = () => {
+      audio.playChime();
+      modalCodex.classList.remove('opacity-0', 'pointer-events-none');
+    };
+    document.getElementById('btnCloseCodex').onclick = () => modalCodex.classList.add('opacity-0', 'pointer-events-none');
+    document.getElementById('btnCloseCodexBottom').onclick = () => modalCodex.classList.add('opacity-0', 'pointer-events-none');
+
+    document.getElementById('btnOpenBacklog').onclick = () => {
+      audio.playChime();
+      modalBacklog.classList.remove('opacity-0', 'pointer-events-none');
+    };
+    document.getElementById('btnCloseBacklog').onclick = () => modalBacklog.classList.add('opacity-0', 'pointer-events-none');
+    document.getElementById('btnCloseBacklogBottom').onclick = () => modalBacklog.classList.add('opacity-0', 'pointer-events-none');
+
+    document.getElementById('btnOpenSceneJump').onclick = () => {
+      audio.playChime();
+      modalSceneJump.classList.remove('opacity-0', 'pointer-events-none');
+    };
+    document.getElementById('btnCloseSceneJump').onclick = closeSceneJumpModal;
+    function closeSceneJumpModal() {
+      modalSceneJump.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    // Audio Mute Toggle
+    document.getElementById('btnToggleAudio').onclick = () => {
+      const isMuted = audio.toggleMute();
+      document.getElementById('audioIconOn').classList.toggle('hidden', isMuted);
+      document.getElementById('audioIconOff').classList.toggle('hidden', !isMuted);
+      showToast(isMuted ? 'Audio Dimatikan' : 'Audio Dihidupkan');
+    };
+
+    // Auto Play & Skip
+    document.getElementById('btnAutoPlay').onclick = (e) => {
+      e.stopPropagation();
+      State.autoPlay = !State.autoPlay;
+      document.getElementById('autoPlayState').innerText = State.autoPlay ? 'ON' : 'OFF';
+      document.getElementById('btnAutoPlay').classList.toggle('text-cyan-300', State.autoPlay);
+      showToast(State.autoPlay ? 'Auto-Play Aktif' : 'Auto-Play Dinonaktifkan');
+      if (State.autoPlay && !State.isTyping) advanceDialogue();
+    };
+
+    document.getElementById('btnSkipText').onclick = (e) => {
+      e.stopPropagation();
+      skipTypewriter();
+    };
+
+    document.getElementById('dialogueClickArea').onclick = advanceDialogue;
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' || e.code === 'Enter') {
+        advanceDialogue();
+      }
+    });
+
+    // Start Game from Title Screen
+    document.getElementById('btnStartGame').onclick = () => {
+      audio.init();
+      audio.playChime();
+      const titleScreen = document.getElementById('titleScreen');
+      titleScreen.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        titleScreen.style.display = 'none';
+        renderCurrentDialogue();
+      }, 700);
+    };
+
+    /* =========================================================================
+       10. CHAPTER 1 ENDING REPORT (Evaluasi Temperatur Batin)
+       ========================================================================= */
+    function showEndingReport() {
+      audio.playGlassShatter();
+      document.getElementById('statRepCold').innerText = `${State.coldness}%`;
+      document.getElementById('statRepEmp').innerText = `${State.empathy}%`;
+      document.getElementById('statRepAuth').innerText = `${State.authority}%`;
+      document.getElementById('statRepRes').innerText = `${State.resonance}%`;
+
+      const titleEl = document.getElementById('reportTitle');
+      const descEl = document.getElementById('reportDescription');
+      const tempEl = document.getElementById('reportTemp');
+      const stateEl = document.getElementById('reportState');
+
+      if (State.coldness >= 75 || State.leverageBurnt) {
+        titleEl.innerText = 'ARCHITECT OF ABSOLUTE ZERO';
+        descEl.innerText = 'Kaelen Vance telah melepaskan seluruh keraguan moral. Dion hancur tanpa ampun, dan Menara Gading bertekuk lutut di hadapan audit es. Jalan menuju penebusan lembut tertutup, tapi otoritasmu mutlak.';
+        tempEl.innerText = '-22°C';
+        stateEl.innerText = 'Beku Total';
+      } else if (State.coldness >= 50 && State.empathy >= 40) {
+        titleEl.innerText = 'SOVEREIGN OF TEMPERED GLASS';
+        descEl.innerText = 'Keseimbangan langka antara kalkulasi bedah dan kepekaan manusia. Kamu memojokkan Dion tanpa meremukkan jiwa Aurelia atau Sera. Menara Gading kini melihatmu sebagai pembaharu yang adil.';
+        tempEl.innerText = '12°C';
+        stateEl.innerText = 'Teruji & Seimbang';
+      } else {
+        titleEl.innerText = 'UNARMORED HEART';
+        descEl.innerText = 'Kaelen menolak menjadi monster seperti mereka yang dulu menjatuhkannya. Menara Gading masih menyimpan ancaman, namun suaka emosional bersama Nadine dan aliansi rahasia menjadi benteng terkuatmu.';
+        tempEl.innerText = '24°C';
+        stateEl.innerText = 'Hangat & Terbuka';
+      }
+
+      // Heroine summaries
+      const feedbackEl = document.getElementById('reportHeroineFeedback');
+      feedbackEl.innerHTML = `
+        <div class="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
+          <span>Aurelia Vanya:</span>
+          <span class="text-cyan-300 font-bold">${State.affection.aurelia >= 50 ? 'Sekutu Konspirasi Dekanat' : 'Dilema Rasa Bersalah'}</span>
+        </div>
+        <div class="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
+          <span>Seraphina Kirana:</span>
+          <span class="text-amber-300 font-bold">${State.affection.seraphina >= 40 ? 'Penebusan & Informan Kunci' : 'Tunduk dalam Ketakutan'}</span>
+        </div>
+        <div class="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
+          <span>Nadine Larasati:</span>
+          <span class="text-emerald-300 font-bold">${State.affection.nadine >= 65 ? 'Jangkar Jiwa Terikat' : 'Penjaga Arsip Terpercaya'}</span>
+        </div>
+      `;
+
+      modalEnding.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeEndingReport() {
+      modalEnding.classList.add('opacity-0', 'pointer-events-none');
+      showToast('Data Chapter 1 Tersimpan. Bersiap untuk Bab 2!');
+    }
+
+    function restartGame() {
+      State.coldness = 65;
+      State.empathy = 35;
+      State.authority = 50;
+      State.resonance = 40;
+      State.affection = { aurelia: 30, seraphina: 20, nadine: 50 };
+      State.currentSceneId = 'scene1';
+      State.currentNodeIndex = 0;
+      State.leverageBurnt = false;
+      modalEnding.classList.add('opacity-0', 'pointer-events-none');
+      updateHUD();
+      renderCurrentDialogue();
+      showToast('Sidang Diulang dari Titik Awal');
+    }
+
+    // Initialize Codex & HUD on load
+    initCodexAvatars();
+    updateHUD();
+  </script>
+</body>
+</html>
