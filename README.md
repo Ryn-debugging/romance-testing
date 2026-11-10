@@ -32,7 +32,7 @@ Enam bulan lalu, **Kaelen Vance (Kael)** dikorbankan demi menyelamatkan reputasi
 
 ---
 
-## ⚙️ Fitur & Arsitektur Gameplay
+## ⚙️ Fitur & Arsitektur Gameplay (Expanded Edition)
 
 1. **Dual-Axis Psychological Thermometer (HUD Top Bar)**:
    - Real-time stat tracking:
@@ -41,29 +41,51 @@ Enam bulan lalu, **Kaelen Vance (Kael)** dikorbankan demi menyelamatkan reputasi
      - `Authority` (Otoritas Audit Yayasan)
      - `Resonance` (Kepekaan Mikro-Ekspresi)
    - Visual mercury bar yang dinamis antara *Absolute Zero (Beku)* hingga *Tempered Glass (Manusiawi)*.
-2. **Frost Vignette Dynamic Effect**:
+
+2. **Peta Kampus Universitas Mahakarya Pradipta (Day/Night Action Phase)**:
+   - Muncul setelah Scene 3 berakhir, menjelang Sidang Hari Jumat.
+   - Pemain memiliki **3 Action Points (AP)** per hari untuk mengunjungi 4 lokasi strategis:
+     - **Ruang Komisi Etik (Lantai 3)**: Berinteraksi dengan Aurelia Vanya, membuka celah regulasi (+10 Otoritas).
+     - **Podium Debat Fakultas**: Berinteraksi dengan Seraphina Kirana, mendapatkan rekaman tekanan Dion (+15 Resonansi).
+     - **Ruang Server Arsip Tua (Rubanah B2)**: Menikmati teh chamomile bersama Nadine, memulihkan ketenangan batin (+15 Empati).
+     - **Ruang Kantor Dekanat**: Investigasi senyap brankas dokumen rahasia, membuka **`[BUKTI 04] Draft Kontrak Konsorsium Gelap Rektorat & PT Pradipta Digital (Rp1.2 Miliar)`**.
+
+3. **Debate Battle Turn-Based (Sidang Dewan Komisaris Hari Jumat)**:
+   - Pertarungan retorika turn-based melawan **Dion Pratama** di hadapan Dewan Komisaris dan Senat.
+   - Bar **Kredibilitas Dion (100 HP)** vs **Ketenangan Kaelen (100 HP)**.
+   - Patahkan 3 argumen manipulasi Dion:
+     - **Ronde 1**: Argumen fitnah dendam personal -> dipatahkan dengan `[BUKTI 02]` Log Kas Rp40 Juta atau Serangan Otoritas.
+     - **Ronde 2**: Argumen kambing hitam terhadap Seraphina -> dipatahkan dengan `[BUKTI 01]` Checksum Baris 412 atau Bedah Resonansi (Stun).
+     - **Ronde 3**: Ancaman patronase dinasti yayasan -> dipatahkan dengan `[BUKTI 04]` Kontrak Konsorsium Gelap.
+   - Pilihan aksi:
+     - `[OTORITAS]`: Serangan Statuta Audit Yayasan (-25 s/d -35 HP).
+     - `[RESONANSI]`: Bedah Mikro-Ekspresi & Stun Turn (-20 HP).
+     - `[KARTU TRUF]`: Skakmat mutlak menggunakan bukti spesifik (-50 s/d -60 HP CRITICAL).
+
+4. **Frost Vignette Dynamic Effect**:
    - Lapisan es prosedural di sekeliling layar yang intensitas opasitasnya otomatis meningkat ketika Coldness > 75%.
-3. **Micro-Expression Sight (Passive System)**:
-   - Saat `Resonance >= 40%`, insight box bercahaya cyan muncul di atas boks dialog, menganalisis mikro-ekspresi lawan bicara (kedipan, detak nadi leher, ketegangan otot rahang).
-4. **Leverage Ledger (Buku Besar Kartu Truf)**:
-   - Panel dossier geser dengan 3 kartu bukti kunci:
+
+5. **Micro-Expression Sight (Passive System)**:
+   - Saat `Resonance >= 40%`, insight box bercahaya cyan muncul di atas boks dialog dan arena debat, menganalisis bahasa tubuh lawan bicara secara presisi.
+
+6. **Leverage Ledger (Buku Besar Kartu Truf)**:
+   - Panel dossier geser dengan 4 bukti kunci:
      - `[BUKTI 01] Checksum Heksadesimal Baris ke-412`
      - `[BUKTI 02] Log Pencairan Kas Senat Ilegal (Rp40 Juta)`
      - `[BUKTI 03] Tanda Tangan Skorsing Aurelia & Transfer RS Anonim`
-   - Sidang klimaks memungkinkan pilihan **BURN LEVERAGE** (skakmat publik tanpa ampun) vs **HOLD AS SHIELD** (tekanan tertutup & membuka rute penebusan).
-5. **Procedural Web Audio API Synthesizer**:
-   - Zero-dependency audio engine:
-     - Ambient rain loop & thunder boom.
-     - Typewriter blips khusus untuk tiap karakter (Kael, Aurelia, Sera, Nadine, Dion).
-     - Glass shatter SFX saat mengeksekusi kartu truf atau skakmat logika.
-     - Heartbeat resonance pulse saat insight aktif.
-6. **Procedural SVG Character Sprites**:
-   - Model vektor SVG dengan status ekspresi dinamis (*Calm, Shocked, Defensive, Guilt, Cornered*), serta active speaker highlighting.
-7. **Branching Storyline & Evaluasi Bab**:
-   - Scene 1: Prolog & Arsip Bawah Tanah bersama Nadine.
-   - Scene 2: Debat Utama Ruang Sidang Senat.
-   - Scene 3: Retakan Koridor Hujan (Rute Aurelia, Rute Sera, Rute Nadine).
-   - Scene 4: Evaluasi Temperatur Batin (Gelar Predikat: *Architect of Absolute Zero*, *Sovereign of Tempered Glass*, atau *Unarmored Heart*).
+     - `[BUKTI 04] Draft Kontrak Konsorsium Gelap Rektorat & PT Pradipta Digital`
+
+7. **Procedural Web Audio API Synthesizer**:
+   - Zero-dependency audio engine: Ambient rain & thunder, distinct typewriter blips, glass-shatter SFX, heartbeat pulse, and UI chimes.
+
+8. **Scene Jump & Replayability**:
+   - Menu *Scene Jump* memungkinkan pengujian instan ke:
+     - Scene 1: Bayangan di Balik Kaca (Prolog)
+     - Scene 2: Variabel Keempat yang Hilang (Sidang Awal)
+     - Scene 3: Retakan di Koridor Hujan (Heroine Hub)
+     - Peta Kampus: Day/Night Action Phase (3 AP)
+     - Sidang Jumat: Debate Battle Turn-Based (vs Dion)
+     - Scene 4: Evaluasi Temperatur Batin (Ending Report)
 
 ---
 

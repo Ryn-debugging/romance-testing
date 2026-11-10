@@ -44,20 +44,20 @@
     }
     /* Frosted Glass Classes */
     .glass-panel {
-      background: rgba(11, 15, 25, 0.78);
+      background: rgba(11, 15, 25, 0.82);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-titanium);
     }
     .glass-panel-glow {
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.88);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-cyan);
-      box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.15);
+      box-shadow: 0 8px 32px 0 rgba(2, 132, 199, 0.18);
     }
     .glass-drawer {
-      background: rgba(7, 10, 18, 0.94);
+      background: rgba(7, 10, 18, 0.95);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border-left: 1px solid rgba(125, 211, 252, 0.25);
@@ -84,20 +84,12 @@
       0%, 100% { opacity: 0.6; }
       50% { opacity: 1; }
     }
-    @keyframes scanline {
-      0% { transform: translateY(-100%); }
-      100% { transform: translateY(1000%); }
-    }
     @keyframes thunderFlash {
       0% { opacity: 0; }
       15% { opacity: 0.85; }
       20% { opacity: 0.2; }
       30% { opacity: 0.95; }
       100% { opacity: 0; }
-    }
-    @keyframes floatGentle {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
     }
     @keyframes glassShatterShake {
       0% { transform: translate(0, 0) rotate(0deg); }
@@ -107,15 +99,16 @@
       80% { transform: translate(4px, -2px) rotate(0.5deg); }
       100% { transform: translate(0, 0) rotate(0deg); }
     }
+    @keyframes damageFloat {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
+    }
 
-    .animate-scanline {
-      animation: scanline 8s linear infinite;
-    }
-    .animate-pulse-slow {
-      animation: pulseGlow 3s ease-in-out infinite;
-    }
     .shatter-shake {
       animation: glassShatterShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    .damage-popup {
+      animation: damageFloat 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     /* Frost Vignette */
@@ -264,7 +257,6 @@
       
       <!-- Character: Aurelia Vanya Rajasa -->
       <div id="spriteAurelia" class="sprite-container sprite-hidden absolute bottom-0 left-[10%] md:left-[22%] w-64 md:w-80 h-[480px] md:h-[580px] flex items-end justify-center">
-        <!-- SVG will be dynamically generated and injected -->
         <div class="sprite-svg-wrapper w-full h-full"></div>
       </div>
 
@@ -283,7 +275,7 @@
         <div class="sprite-svg-wrapper w-full h-full"></div>
       </div>
 
-      <!-- Character: Kaelen Vance (MC / Auditor - When needed in dual confrontation) -->
+      <!-- Character: Kaelen Vance (MC / Auditor) -->
       <div id="spriteKael" class="sprite-container sprite-hidden absolute bottom-0 left-[8%] md:left-[14%] w-64 md:w-80 h-[480px] md:h-[580px] flex items-end justify-center">
         <div class="sprite-svg-wrapper w-full h-full"></div>
       </div>
@@ -297,7 +289,308 @@
       </div>
     </main>
 
-    <!-- ==================== DIALOGUE & NARRATIVE INTERFACE ==================== -->
+    <!-- ==================== CAMPUS MAP OVERLAY (UNIVERSITAS MAHAKARYA PRADIPTA) ==================== -->
+    <div id="campusMapScreen" class="absolute inset-0 z-35 flex flex-col justify-between p-4 md:p-8 bg-slate-950/85 backdrop-blur-xl transition-all duration-500 opacity-0 pointer-events-none">
+      
+      <!-- Map Header & AP Tracker -->
+      <div class="flex flex-col md:flex-row items-center justify-between gap-3 border-b border-cyan-500/30 pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+            <span class="text-xs font-mono-code text-cyan-300 uppercase tracking-widest">Fase Aksi Harian (Day/Night Action Phase)</span>
+          </div>
+          <h2 class="text-xl md:text-2xl font-serif-title font-bold text-white tracking-wide">
+            Peta Kampus Universitas Mahakarya Pradipta
+          </h2>
+          <p id="mapPhaseDesc" class="text-xs text-slate-400 font-mono-code">
+            Hari Kamis: Persiapan Menjelang Sidang Dewan Komisaris Hari Jumat.
+          </p>
+        </div>
+
+        <!-- Action Points (AP) Visual Indicator -->
+        <div class="flex items-center gap-4 glass-panel px-4 py-2 rounded-lg border border-cyan-500/40 shadow-[0_0_20px_rgba(56,189,248,0.2)]">
+          <div class="text-right">
+            <div class="text-[10px] font-mono-code text-slate-400 uppercase">Action Points (AP)</div>
+            <div id="apTextCount" class="text-sm font-bold text-cyan-300 font-mono-code">3 / 3 TERSISA</div>
+          </div>
+          <div id="apCrystals" class="flex items-center gap-1.5 text-cyan-400 text-base">
+            <span class="ap-dot">◆</span>
+            <span class="ap-dot">◆</span>
+            <span class="ap-dot">◆</span>
+          </div>
+          <button onclick="skipToFridayDebate()" class="ml-2 px-3 py-1.5 rounded bg-cyan-900/60 hover:bg-cyan-800 border border-cyan-400/50 text-cyan-200 text-xs font-mono-code transition">
+            SIDANG JUMAT →
+          </button>
+        </div>
+      </div>
+
+      <!-- Campus Grid / 4 Interactive Locations -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 my-auto py-4">
+        
+        <!-- Location 1: Ruang Komisi Etik (Aurelia) -->
+        <div onclick="visitLocation('etik')" class="glass-panel p-4 rounded-xl border border-slate-700/80 hover:border-cyan-400/80 hover:bg-cyan-950/30 transition-all duration-300 cursor-pointer group flex flex-col justify-between h-72 shadow-xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition-all"></div>
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-[10px] font-mono-code text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-2 py-0.5 rounded">
+                LANTAI 3 // REKTORAT
+              </span>
+              <span class="text-xs text-purple-400 font-mono-code">Aurelia</span>
+            </div>
+            <h3 class="text-base font-serif-title font-bold text-white group-hover:text-cyan-200 transition">
+              Ruang Komisi Etik
+            </h3>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              Kantor marmer kedap suara. Aurelia Vanya sedang mengkaji ulang berkas pemecatan lama dan regulasi audit independen.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-800">
+            <div class="flex justify-between items-center text-[11px] font-mono-code text-slate-400 mb-2">
+              <span>Biaya Aksi:</span>
+              <span class="text-cyan-300 font-bold">-1 AP</span>
+            </div>
+            <div class="w-full py-2 rounded bg-slate-900/90 group-hover:bg-cyan-600 group-hover:text-slate-950 text-cyan-300 text-center text-xs font-mono-code font-semibold transition">
+              KUNJUNGI AURELIA
+            </div>
+          </div>
+        </div>
+
+        <!-- Location 2: Podium Debat Fakultas (Seraphina) -->
+        <div onclick="visitLocation('debat')" class="glass-panel p-4 rounded-xl border border-slate-700/80 hover:border-amber-400/80 hover:bg-amber-950/30 transition-all duration-300 cursor-pointer group flex flex-col justify-between h-72 shadow-xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all"></div>
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-[10px] font-mono-code text-amber-300 bg-amber-950/80 border border-amber-500/40 px-2 py-0.5 rounded">
+                AUDITORIUM UTAMA
+              </span>
+              <span class="text-xs text-amber-400 font-mono-code">Seraphina</span>
+            </div>
+            <h3 class="text-base font-serif-title font-bold text-white group-hover:text-amber-200 transition">
+              Podium Debat Fakultas
+            </h3>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              Panggung kayu megah yang sepi. Seraphina Kirana menatap mikrofon mati, bergulat antara harga diri dan ketakutan dikorbankan oleh Dion.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-800">
+            <div class="flex justify-between items-center text-[11px] font-mono-code text-slate-400 mb-2">
+              <span>Biaya Aksi:</span>
+              <span class="text-amber-300 font-bold">-1 AP</span>
+            </div>
+            <div class="w-full py-2 rounded bg-slate-900/90 group-hover:bg-amber-500 group-hover:text-slate-950 text-amber-300 text-center text-xs font-mono-code font-semibold transition">
+              KUNJUNGI SERAPHINA
+            </div>
+          </div>
+        </div>
+
+        <!-- Location 3: Ruang Server Arsip Tua (Nadine) -->
+        <div onclick="visitLocation('arsip')" class="glass-panel p-4 rounded-xl border border-slate-700/80 hover:border-emerald-400/80 hover:bg-emerald-950/30 transition-all duration-300 cursor-pointer group flex flex-col justify-between h-72 shadow-xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-[10px] font-mono-code text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded">
+                RUBANAH B2 // SERVER
+              </span>
+              <span class="text-xs text-emerald-400 font-mono-code">Nadine</span>
+            </div>
+            <h3 class="text-base font-serif-title font-bold text-white group-hover:text-emerald-200 transition">
+              Ruang Server Arsip Tua
+            </h3>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              Suaka bawah tanah yang hangat beraroma chamomile. Nadine Larasati memonitor lalu lintas data rahasia dan mencadangkan log krusial.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-800">
+            <div class="flex justify-between items-center text-[11px] font-mono-code text-slate-400 mb-2">
+              <span>Biaya Aksi:</span>
+              <span class="text-emerald-300 font-bold">-1 AP</span>
+            </div>
+            <div class="w-full py-2 rounded bg-slate-900/90 group-hover:bg-emerald-500 group-hover:text-slate-950 text-emerald-300 text-center text-xs font-mono-code font-semibold transition">
+              KUNJUNGI NADINE
+            </div>
+          </div>
+        </div>
+
+        <!-- Location 4: Ruang Dekanat (Investigasi Bukti Baru) -->
+        <div onclick="visitLocation('dekanat')" class="glass-panel p-4 rounded-xl border border-slate-700/80 hover:border-rose-400/80 hover:bg-rose-950/30 transition-all duration-300 cursor-pointer group flex flex-col justify-between h-72 shadow-xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-full blur-2xl group-hover:bg-rose-500/20 transition-all"></div>
+          <div>
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-[10px] font-mono-code text-rose-300 bg-rose-950/80 border border-rose-500/40 px-2 py-0.5 rounded">
+                LANTAI 5 // ARSIP SENSITIF
+              </span>
+              <span class="text-xs text-rose-400 font-mono-code">Investigasi</span>
+            </div>
+            <h3 class="text-base font-serif-title font-bold text-white group-hover:text-rose-200 transition">
+              Ruang Kantor Dekanat
+            </h3>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+              Pintu bertuliskan 'Khusus Pejabat'. Kesempatan menyusupkan mandat audit Yayasan untuk membongkar kontrak konsorsium gelap tingkat atas.
+            </p>
+          </div>
+          <div class="pt-3 border-t border-slate-800">
+            <div class="flex justify-between items-center text-[11px] font-mono-code text-slate-400 mb-2">
+              <span>Peluang:</span>
+              <span class="text-rose-300 font-bold">[BUKTI 04] KONSORSIUM</span>
+            </div>
+            <div class="w-full py-2 rounded bg-slate-900/90 group-hover:bg-rose-600 group-hover:text-white text-rose-300 text-center text-xs font-mono-code font-semibold transition">
+              LAKUKAN INVESTIGASI
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Status Log -->
+      <div class="glass-panel px-4 py-2.5 rounded-lg border border-slate-800 flex justify-between items-center text-xs font-mono-code text-slate-400">
+        <span>Tip Strategis: Kunjungi Dekanat untuk membuka [BUKTI 04] sebelum Sidang Jumat!</span>
+        <span id="mapTimeLabel" class="text-cyan-300 font-bold">WAKTU: SORE HARI</span>
+      </div>
+
+    </div>
+
+    <!-- ==================== DEBATE BATTLE SCREEN (FRIDAY PLENARY VS DION) ==================== -->
+    <div id="debateBattleScreen" class="absolute inset-0 z-35 flex flex-col justify-between p-4 md:p-6 bg-slate-950/90 backdrop-blur-2xl transition-all duration-500 opacity-0 pointer-events-none">
+      
+      <!-- Battle Header HUD (HP Bars) -->
+      <div class="w-full glass-panel p-3 rounded-xl border border-slate-700/80 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
+        
+        <!-- Player: Kaelen Composure Bar -->
+        <div class="w-full md:w-5/12 flex flex-col">
+          <div class="flex justify-between items-center text-xs font-mono-code mb-1">
+            <span class="text-cyan-300 font-bold flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+              Kaelen Vance (Auditor Khusus)
+            </span>
+            <span id="kaelComposureText" class="text-cyan-200">Ketenangan: 100/100</span>
+          </div>
+          <div class="w-full h-3 rounded-full bg-slate-900 border border-cyan-500/40 overflow-hidden relative">
+            <div id="kaelHpBar" class="h-full bg-gradient-to-r from-sky-500 to-cyan-400 transition-all duration-500" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Center Battle Round Badge -->
+        <div class="text-center px-4 py-1 rounded bg-slate-900/80 border border-slate-700 font-mono-code">
+          <div class="text-[9px] text-slate-400 uppercase">Sidang Dewan Komisaris</div>
+          <div id="debateRoundBadge" class="text-xs font-bold text-amber-300 tracking-wider">RONDE 1 / 3</div>
+        </div>
+
+        <!-- Enemy: Dion Credibility Bar -->
+        <div class="w-full md:w-5/12 flex flex-col">
+          <div class="flex justify-between items-center text-xs font-mono-code mb-1">
+            <span id="dionCredibilityText" class="text-rose-300">Kredibilitas: 100/100</span>
+            <span class="text-rose-400 font-bold flex items-center gap-1.5">
+              Dion Pratama (Ketua BEM Terperiksa)
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            </span>
+          </div>
+          <div class="w-full h-3 rounded-full bg-slate-900 border border-rose-500/40 overflow-hidden relative">
+            <div id="dionHpBar" class="h-full bg-gradient-to-r from-amber-500 via-rose-500 to-red-600 transition-all duration-500" style="width: 100%;"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Battle Visual Face-off Area -->
+      <div class="flex-1 w-full flex items-center justify-between px-4 md:px-12 my-2 relative overflow-hidden">
+        
+        <!-- Left: Kael Portrait Small SVG Frame -->
+        <div class="w-44 md:w-60 h-64 md:h-80 flex flex-col items-center justify-end relative">
+          <div id="battleKaelSvg" class="w-full h-full filter drop-shadow-[0_0_20px_rgba(56,189,248,0.3)]"></div>
+          <div class="text-[11px] font-mono-code text-cyan-300 bg-slate-950/90 px-3 py-0.5 rounded-full border border-cyan-500/40 mt-1">
+            STAT: Otoritas <span id="batStatAuth">50</span> | Resonansi <span id="batStatRes">40</span>
+          </div>
+        </div>
+
+        <!-- Center: Dion's Argument Bubble & Micro-Insight -->
+        <div class="flex-1 max-w-xl mx-4 flex flex-col items-center gap-3 z-10">
+          
+          <!-- Dion Argument Speech Card -->
+          <div class="w-full glass-panel p-4 rounded-xl border border-rose-500/40 shadow-2xl relative">
+            <div class="flex items-center justify-between text-[10px] font-mono-code text-rose-400 uppercase mb-1">
+              <span>[ARGUMEN MANIPULASI DION PRATAMA]</span>
+              <span id="dionToneLabel" class="text-slate-400">Gaya: Agresi Retoris</span>
+            </div>
+            <p id="dionSpeechText" class="text-sm md:text-base text-slate-100 font-serif-title leading-relaxed">
+              "Audit ini rekayasa balas dendam pribadi Kaelen Vance! Alokasi Rp40 Juta adalah hibah riset sah demi nama baik delegasi nasional universitas!"
+            </p>
+          </div>
+
+          <!-- Micro-Expression Vulnerability Insight -->
+          <div class="w-full glass-panel p-3 rounded-lg border-l-4 border-l-cyan-400 border border-slate-700/80 flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-cyan-400 animate-pulse mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            <div class="text-xs font-mono-code text-sky-200/90 leading-relaxed">
+              <span class="text-cyan-300 font-bold">ANALISIS KELEMAHAN: </span>
+              <span id="dionVulnerabilityText">Dion mengunci tatapannya ke meja dekanat; jemari kirinya bergetar 4 Hz. Titik patah: Paparkan [BUKTI 02] Log Rekening Kas atau gunakan Serangan Otoritas Yayasan!</span>
+            </div>
+          </div>
+
+          <!-- Damage / Action Log Notification -->
+          <div id="battleLogText" class="text-xs font-mono-code text-amber-300 text-center min-h-[18px]">
+            Giliran Anda: Pilih tindakan strategis untuk mematahkan argumen Dion!
+          </div>
+        </div>
+
+        <!-- Right: Dion Portrait SVG Frame -->
+        <div class="w-44 md:w-60 h-64 md:h-80 flex flex-col items-center justify-end relative">
+          <div id="battleDionSvg" class="w-full h-full filter drop-shadow-[0_0_20px_rgba(244,63,94,0.3)]"></div>
+          <div class="text-[11px] font-mono-code text-rose-300 bg-slate-950/90 px-3 py-0.5 rounded-full border border-rose-500/40 mt-1">
+            STATUS: <span id="dionBattleState">Defensif Agresif</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Battle Command Deck (3 Actions) -->
+      <div class="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-slate-800">
+        
+        <!-- Action 1: Serangan Otoritas (Authority Check) -->
+        <button onclick="executeDebateAction('authority')" class="p-3 rounded-xl glass-panel hover:border-cyan-400 hover:bg-cyan-950/40 text-left transition-all duration-200 group border border-slate-700/80">
+          <div class="flex items-center justify-between text-xs font-mono-code text-cyan-400 mb-1">
+            <span class="font-bold">[AKSI 1: OTORITAS]</span>
+            <span class="text-slate-400">Statuta Audit</span>
+          </div>
+          <div class="font-bold text-sm text-white group-hover:text-cyan-200 transition">
+            Bacakan Regulasi Yayasan
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1 leading-snug">
+            Serang celah hukum menggunakan wewenang Komisi Pembina Yayasan (-25 s/d -35 Kredibilitas).
+          </p>
+        </button>
+
+        <!-- Action 2: Bedah Resonansi (Resonance Check / Stun) -->
+        <button onclick="executeDebateAction('resonance')" class="p-3 rounded-xl glass-panel hover:border-sky-400 hover:bg-sky-950/40 text-left transition-all duration-200 group border border-slate-700/80">
+          <div class="flex items-center justify-between text-xs font-mono-code text-sky-400 mb-1">
+            <span class="font-bold">[AKSI 2: RESONANSI]</span>
+            <span class="text-emerald-400">Stun Debat</span>
+          </div>
+          <div class="font-bold text-sm text-white group-hover:text-sky-200 transition">
+            Bedah Mikro-Ekspresi
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1 leading-snug">
+            Bongkar kegugupan fisik dan bahasa tubuh Dion di depan pleno. Menghilangkan serangan balik Dion (-20 HP).
+          </p>
+        </button>
+
+        <!-- Action 3: Deploy Kartu Truf (Leverage Ledger) -->
+        <button onclick="openDebateLeverageModal()" class="p-3 rounded-xl glass-panel hover:border-amber-400 hover:bg-amber-950/40 text-left transition-all duration-200 group border border-slate-700/80 shadow-[0_0_15px_rgba(251,191,36,0.15)]">
+          <div class="flex items-center justify-between text-xs font-mono-code text-amber-400 mb-1">
+            <span class="font-bold">[AKSI 3: KARTU TRUF]</span>
+            <span class="text-amber-300 font-bold">SKAKMAT MUTLAK</span>
+          </div>
+          <div class="font-bold text-sm text-white group-hover:text-amber-200 transition">
+            Luncurkan Bukti Forensik
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1 leading-snug">
+            Pilih bukti kunci dari Buku Besar untuk mematahkan argumen secara instan (-50 HP CRITICAL).
+          </p>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== DIALOGUE & NARRATIVE INTERFACE (NORMAL VN MODE) ==================== -->
     <footer id="dialogueContainer" class="relative z-30 w-full max-w-5xl mx-auto px-4 pb-4 transition-all duration-300">
       
       <!-- 1. PASSIVE SYSTEM: Micro-Expression Sight Insight Box -->
@@ -382,7 +675,7 @@
         </div>
 
         <!-- Cards List -->
-        <div class="space-y-4">
+        <div class="space-y-4" id="ledgerCardsContainer">
           
           <!-- Card 1 -->
           <div class="glass-panel p-4 rounded-lg border border-cyan-500/30 hover:border-cyan-400/60 transition group">
@@ -398,11 +691,11 @@
               Kunci Checksum Heksadesimal Baris ke-412
             </h4>
             <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-              Potongan commit kriptografis pada modul <code>lib-sentiment-v2</code> yang membuktikan algoritma Dion & Seraphina 85% identik dengan penelitian Kael sebelum beasiswanya dicabut.
+              Commit rahasia `lib-sentiment-v2` yang membuktikan Dion & Seraphina menyalin kode riset Kael.
             </p>
             <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono-code">
-              <span>Target: Dion Pratama & Sera</span>
-              <span class="text-cyan-300">Potensi: +25 Otoritas</span>
+              <span>Target: Dion & Sera</span>
+              <span class="text-cyan-300">Potensi: -50 HP Dion (Ronde 2)</span>
             </div>
           </div>
 
@@ -420,11 +713,11 @@
               Log Pencairan Kas Senat Ilegal (Rp40 Juta)
             </h4>
             <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-              Invoice fiktif atas nama "Tiga Konsultan Independen" yang dialirkan ke rekening bank cangkang milik kerabat Dion untuk membiayai suap delegasi kongres.
+              Invoice fiktif INV-SENAT-2026-088 atas nama paman Dion untuk menyuap delegasi kongres.
             </p>
             <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono-code">
               <span>Target: Dion Pratama</span>
-              <span class="text-amber-300">Dampak: Skakmat Kas Keuangan</span>
+              <span class="text-amber-300">Potensi: -50 HP Dion (Ronde 1)</span>
             </div>
           </div>
 
@@ -442,7 +735,7 @@
               Tanda Tangan Skorsing Aurelia & Transfer RS Anonim
             </h4>
             <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-              Dua dokumen kontradiktif: Surat skorsing Kael yang diteken Aurelia di bawah tekanan Rektorat, berbanding lurus dengan transfer darurat Rp25.000.000 ke rekening RS Ibu Kael pada malam yang sama.
+              Dua dokumen kontradiktif: Skorsing Kael berbanding lurus dengan transfer darurat Rp25 Juta ke ICU Ibu Kael.
             </p>
             <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono-code">
               <span>Target: Aurelia Vanya</span>
@@ -450,11 +743,67 @@
             </div>
           </div>
 
+          <!-- Card 4 (Dynamically Unlocked in Dean's Office) -->
+          <div id="ledgerCard4" class="glass-panel p-4 rounded-lg border border-purple-500/40 hover:border-purple-400/70 transition group hidden">
+            <div class="flex justify-between items-start mb-2">
+              <span class="text-xs font-mono-code font-bold text-purple-300 bg-purple-950/80 border border-purple-500/50 px-2 py-0.5 rounded">
+                [BUKTI 04]
+              </span>
+              <span class="text-[10px] font-mono-code text-purple-400 bg-purple-950/60 border border-purple-500/50 px-1.5 py-0.5 rounded">
+                KONSORSIUM GELAP
+              </span>
+            </div>
+            <h4 class="font-bold text-sm text-white group-hover:text-purple-200 transition">
+              Draft Kontrak Konsorsium Gelap Rektorat & PT Pradipta Digital
+            </h4>
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+              Dokumen rahasia senilai Rp1,2 Miliar yang membuktikan proposal Dion adalah kedok proyek monopoli keluarga yayasannya.
+            </p>
+            <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between text-[11px] text-slate-400 font-mono-code">
+              <span>Target: Dion & Dinasti Dekanat</span>
+              <span class="text-purple-300">Potensi: -60 HP Dion (Ronde 3)</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
       <div class="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-400 font-mono-code">
-        Kartu truf dapat dideploy pada sidang deliberasi atau konfrontasi personal koridor.
+        Kartu truf dapat dideploy pada Sidang Dewan Komisaris Hari Jumat untuk skakmat kritis!
+      </div>
+    </div>
+  </div>
+
+  <!-- A2. DEBATE LEVERAGE SELECTION MODAL -->
+  <div id="modalDebateLeverage" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="w-full max-w-lg glass-panel-glow rounded-xl p-5 flex flex-col space-y-3">
+      <div class="flex items-center justify-between border-b border-amber-500/40 pb-2">
+        <h3 class="font-serif-title font-bold text-white text-base text-amber-300">Pilih Kartu Truf untuk Skakmat Argumen Dion</h3>
+        <button onclick="closeDebateLeverageModal()" class="p-1 rounded text-slate-400 hover:text-white transition">✕</button>
+      </div>
+      <p class="text-xs text-slate-300 font-mono-code">Pilih bukti yang secara logis membongkar kebohongan Dion di ronde ini:</p>
+      <div class="space-y-2">
+        <button onclick="deployEvidenceInDebate('bukti1')" class="w-full text-left p-3 rounded glass-panel hover:border-cyan-400 transition flex justify-between items-center group">
+          <div>
+            <div class="text-xs font-bold text-cyan-300 group-hover:text-cyan-200">[BUKTI 01] Checksum Baris 412</div>
+            <div class="text-[11px] text-slate-400">Membuktikan pencurian kode Kael oleh Dion & Sera</div>
+          </div>
+          <span class="text-cyan-400 text-xs font-mono-code">Luncurkan →</span>
+        </button>
+        <button onclick="deployEvidenceInDebate('bukti2')" class="w-full text-left p-3 rounded glass-panel hover:border-amber-400 transition flex justify-between items-center group">
+          <div>
+            <div class="text-xs font-bold text-amber-300 group-hover:text-amber-200">[BUKTI 02] Log Pencairan Kas Rp40 Juta</div>
+            <div class="text-[11px] text-slate-400">Invoice fiktif ke rekening pribadi paman Dion</div>
+          </div>
+          <span class="text-amber-400 text-xs font-mono-code">Luncurkan →</span>
+        </button>
+        <button id="btnDebateEvidence4" onclick="deployEvidenceInDebate('bukti4')" class="w-full text-left p-3 rounded glass-panel hover:border-purple-400 transition justify-between items-center group hidden">
+          <div>
+            <div class="text-xs font-bold text-purple-300 group-hover:text-purple-200">[BUKTI 04] Kontrak Konsorsium Gelap Rp1.2 M</div>
+            <div class="text-[11px] text-slate-400">Membongkar ancaman dinasti yayasan keluarga Dion</div>
+          </div>
+          <span class="text-purple-400 text-xs font-mono-code">Luncurkan →</span>
+        </button>
       </div>
     </div>
   </div>
@@ -470,7 +819,6 @@
         <button id="btnCloseCodex" class="p-1 rounded text-slate-400 hover:text-white border border-slate-700/50 hover:bg-slate-800 transition">✕</button>
       </div>
 
-      <!-- Heroine Profiles Tabs / Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 overflow-y-auto pr-1 py-1">
         
         <!-- Aurelia Profile -->
@@ -534,9 +882,7 @@
         <h3 class="font-serif-title font-bold text-white text-base">Riwayat Transkrip Sidang & Dialog</h3>
         <button id="btnCloseBacklog" class="p-1 rounded text-slate-400 hover:text-white border border-slate-700/50 hover:bg-slate-800 transition">✕</button>
       </div>
-      <div id="backlogContent" class="flex-1 overflow-y-auto space-y-3 pr-2 text-xs leading-relaxed">
-        <!-- Dynamic history items -->
-      </div>
+      <div id="backlogContent" class="flex-1 overflow-y-auto space-y-3 pr-2 text-xs leading-relaxed"></div>
       <div class="pt-3 border-t border-slate-800 flex justify-end">
         <button id="btnCloseBacklogBottom" class="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-white text-xs transition">Tutup</button>
       </div>
@@ -545,35 +891,49 @@
 
   <!-- D. SCENE JUMP / CHAPTER SELECTOR MODAL -->
   <div id="modalSceneJump" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="w-full max-w-lg glass-panel-glow rounded-xl p-5 flex flex-col space-y-4">
+    <div class="w-full max-w-lg glass-panel-glow rounded-xl p-5 flex flex-col space-y-3">
       <div class="flex items-center justify-between border-b border-cyan-500/30 pb-2">
         <h3 class="font-serif-title font-bold text-white text-base">Pindah Bab (Scene Jump)</h3>
         <button id="btnCloseSceneJump" class="p-1 rounded text-slate-400 hover:text-white transition">✕</button>
       </div>
-      <p class="text-xs text-slate-300 font-mono-code">Pilih titik bab untuk eksplorasi rute dan testing percabangan:</p>
+      <p class="text-xs text-slate-300 font-mono-code">Pilih titik bab untuk eksplorasi rute dan testing fitur:</p>
       <div class="space-y-2">
-        <button onclick="jumpToScene('scene1')" class="w-full text-left p-3 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
+        <button onclick="jumpToScene('scene1')" class="w-full text-left p-2.5 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
           <div>
             <div class="text-xs font-bold text-white group-hover:text-cyan-300">SCENE 1: Bayangan di Balik Kaca</div>
             <div class="text-[11px] text-slate-400">Prolog & Persiapan Audit di Arsip Bawah Tanah bersama Nadine</div>
           </div>
           <span class="text-cyan-400 text-xs">Lompat →</span>
         </button>
-        <button onclick="jumpToScene('scene2')" class="w-full text-left p-3 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
+        <button onclick="jumpToScene('scene2')" class="w-full text-left p-2.5 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
           <div>
             <div class="text-xs font-bold text-white group-hover:text-cyan-300">SCENE 2: Variabel Keempat yang Hilang</div>
             <div class="text-[11px] text-slate-400">Ruang Sidang Senat: Debat Kael vs Dion & Sera, Presidensi Aurelia</div>
           </div>
           <span class="text-cyan-400 text-xs">Lompat →</span>
         </button>
-        <button onclick="jumpToScene('scene3_hub')" class="w-full text-left p-3 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
+        <button onclick="jumpToScene('scene3_hub')" class="w-full text-left p-2.5 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
           <div>
             <div class="text-xs font-bold text-white group-hover:text-cyan-300">SCENE 3: Retakan di Koridor Hujan</div>
-            <div class="text-[11px] text-slate-400">Pilihan Rute Heroine: Aurelia (Balkon), Sera (Debat), Nadine (Arsip)</div>
+            <div class="text-[11px] text-slate-400">Pilihan Rute Heroine: Aurelia, Sera, Nadine</div>
           </div>
           <span class="text-cyan-400 text-xs">Lompat →</span>
         </button>
-        <button onclick="jumpToScene('scene4')" class="w-full text-left p-3 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
+        <button onclick="activateCampusMap()" class="w-full text-left p-2.5 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group border border-cyan-500/40">
+          <div>
+            <div class="text-xs font-bold text-cyan-300 group-hover:text-cyan-200">★ PETA KAMPUS (Day/Night Action Phase)</div>
+            <div class="text-[11px] text-slate-400">3 Action Points (AP): Kunjungi Komisi Etik, Debat, Arsip, Dekanat</div>
+          </div>
+          <span class="text-cyan-400 text-xs font-bold">Lompat →</span>
+        </button>
+        <button onclick="startFridayDebateBattle()" class="w-full text-left p-2.5 rounded glass-panel hover:border-amber-400/80 transition flex justify-between items-center group border border-amber-500/40">
+          <div>
+            <div class="text-xs font-bold text-amber-300 group-hover:text-amber-200">⚔️ SIDANG JUMAT (Debate Battle Turn-Based)</div>
+            <div class="text-[11px] text-slate-400">Pertarungan Debat Melawan Dion Pratama (3 Argumen Manipulasi)</div>
+          </div>
+          <span class="text-amber-400 text-xs font-bold">Lompat →</span>
+        </button>
+        <button onclick="jumpToScene('scene4')" class="w-full text-left p-2.5 rounded glass-panel hover:border-cyan-400/80 transition flex justify-between items-center group">
           <div>
             <div class="text-xs font-bold text-white group-hover:text-cyan-300">SCENE 4: Evaluasi Temperatur Batin</div>
             <div class="text-[11px] text-slate-400">Laporan Akhir Audit Psikologis, Penentuan Gelar & Rangkuman</div>
@@ -586,13 +946,11 @@
 
   <!-- E. TITLE SCREEN / START OVERLAY -->
   <div id="titleScreen" class="fixed inset-0 z-50 flex flex-col justify-between items-center p-8 bg-[#07090e]/85 backdrop-blur-md transition-opacity duration-700">
-    <!-- Top Aesthetic Header -->
     <div class="w-full flex justify-between items-center text-xs font-mono-code text-slate-500">
-      <span>MENARA GADING // KOMISI AUDIT KHUSUS</span>
-      <span>VERSI 1.0.4 - BUILD STABLE</span>
+      <span>UNIVERSITAS MAHAKARYA PRADIPTA // KOMISI AUDIT KHUSUS</span>
+      <span>VERSI 2.0.0 - EXPANDED EDITION</span>
     </div>
 
-    <!-- Center Title Block -->
     <div class="text-center max-w-2xl px-4 py-8 relative">
       <div class="inline-block px-3 py-1 mb-4 rounded-full border border-cyan-500/40 bg-cyan-950/40 text-cyan-300 text-xs font-mono-code tracking-widest uppercase">
         Visual Novel & Social-Strategy RPG
@@ -607,7 +965,6 @@
         "Enam bulan lalu mereka merampas masa depanku dengan secarik surat etik. Malam ini, aku kembali bukan untuk memohon ampun, melainkan mengadili setiap kebohongan di balik jendela kaca mereka."
       </p>
 
-      <!-- Primary Action Buttons -->
       <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
         <button id="btnStartGame" class="w-48 py-3 rounded-lg bg-gradient-to-r from-cyan-600 to-sky-500 hover:from-cyan-500 hover:to-sky-400 text-slate-950 font-serif-title font-bold text-sm tracking-wider shadow-[0_0_24px_rgba(56,189,248,0.4)] transition-all transform hover:scale-105 active:scale-95">
           MULAI SIDANG
@@ -618,9 +975,8 @@
       </div>
     </div>
 
-    <!-- Bottom Audio / Instruction Notice -->
     <div class="text-center text-[11px] text-slate-500 font-mono-code">
-      Klik "MULAI SIDANG" untuk mengaktifkan Audio Synthesizer (Hujan & Efek Kaca). Gunakan earphone untuk pengalaman imersif.
+      Klik "MULAI SIDANG" untuk mengaktifkan Audio Synthesizer (Hujan, SFX Kaca & Detak Jantung).
     </div>
   </div>
 
@@ -630,7 +986,7 @@
       
       <div class="text-center border-b border-cyan-500/30 pb-4 mb-5">
         <div class="inline-block px-3 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/40 text-[10px] text-cyan-300 font-mono-code uppercase mb-2">
-          AUDIT PSIKOLOGIS BAB 1 SELESAI
+          AUDIT INVESTIGATIF LENGKAP SELESAI
         </div>
         <h2 class="text-2xl md:text-3xl font-serif-title font-bold text-white mb-1">
           EVALUASI TEMPERATUR BATIN
@@ -680,10 +1036,8 @@
 
       <!-- Heroine Relationship Recaps -->
       <div class="space-y-2 mb-6">
-        <h4 class="text-xs uppercase font-mono-code text-slate-400">Dampak Terhadap Heroine:</h4>
-        <div id="reportHeroineFeedback" class="space-y-1.5 text-xs text-slate-300">
-          <!-- Dynamic heroine summaries -->
-        </div>
+        <h4 class="text-xs uppercase font-mono-code text-slate-400">Dampak Terhadap Heroine & Dewan:</h4>
+        <div id="reportHeroineFeedback" class="space-y-1.5 text-xs text-slate-300"></div>
       </div>
 
       <!-- Action Buttons -->
@@ -692,7 +1046,7 @@
           ↺ ULANGI SIDANG (RESTART)
         </button>
         <button onclick="closeEndingReport()" class="py-2.5 px-6 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-serif-title font-bold text-xs tracking-wider transition shadow-lg">
-          SIMPAN & LANJUTKAN KE CHAPTER 2
+          SIMPAN DATA AUDIT
         </button>
       </div>
 
@@ -700,7 +1054,7 @@
   </div>
 
 
-  <!-- ==================== SCRIPT ENGINE (Canvas, Audio, VN State Machine) ==================== -->
+  <!-- ==================== SCRIPT ENGINE (Canvas, Audio, VN, Map, Debate) ==================== -->
   <script>
     /* =========================================================================
        1. GAME STATE MANAGEMENT
@@ -731,8 +1085,27 @@
       history: [],
       
       // Leverage Ledger State
-      leverageBurnt: false, // true if player chose BURN in scene 2
-      unlockedBonusInsight: false
+      leverageBurnt: false,
+      hasEvidence4: false,
+
+      // Campus Map (Action Points Phase)
+      actionPoints: 3,
+      currentMapTime: 'Siang', // Pagi -> Siang -> Sore -> Malam
+      visitedLocations: {
+        etik: 0,
+        debat: 0,
+        arsip: 0,
+        dekanat: 0
+      },
+
+      // Debate Battle Turn-Based (vs Dion)
+      debate: {
+        kaelHp: 100,
+        dionHp: 100,
+        round: 1,
+        isDionStunned: false,
+        active: false
+      }
     };
 
     /* =========================================================================
@@ -761,7 +1134,6 @@
 
       setupRainSynth() {
         if (!this.ctx) return;
-        // Generate continuous pink/brownian noise buffer for realistic rain
         const bufferSize = this.ctx.sampleRate * 3;
         const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
         const output = noiseBuffer.getChannelData(0);
@@ -778,7 +1150,6 @@
         this.rainSource.buffer = noiseBuffer;
         this.rainSource.loop = true;
 
-        // Bandpass + Lowpass filters for interior window acoustics
         const filter = this.ctx.createBiquadFilter();
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(950, this.ctx.currentTime);
@@ -806,7 +1177,6 @@
           else if (speaker === 'Dion') freq = 280;
           else if (speaker === 'Narator') freq = 310;
 
-          // Subtle pitch flutter
           freq += (Math.random() - 0.5) * 20;
 
           osc.type = speaker === 'Kael' ? 'triangle' : 'sine';
@@ -827,7 +1197,6 @@
         if (!this.ctx || this.isMuted) return;
         try {
           const now = this.ctx.currentTime;
-          // Cluster of high crystalline sines decaying rapidly
           const freqs = [1200, 1850, 2400, 3100, 4200];
           freqs.forEach((f, i) => {
             const osc = this.ctx.createOscillator();
@@ -842,7 +1211,6 @@
             osc.stop(now + 0.9);
           });
 
-          // Noise transient for the impact crunch
           const bufferSize = this.ctx.sampleRate * 0.15;
           const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
           const data = buffer.getChannelData(0);
@@ -943,7 +1311,7 @@
     const audio = new SoundEngine();
 
     /* =========================================================================
-       3. PROCEDURAL BACKGROUND CANVAS (Rain on Glass & Ivory Tower Sky)
+       3. PROCEDURAL BACKGROUND CANVAS (Rain on Glass)
        ========================================================================= */
     const canvas = document.getElementById('rainCanvas');
     const ctx = canvas.getContext('2d');
@@ -988,13 +1356,12 @@
     function triggerLightning() {
       const flashEl = document.getElementById('lightningFlash');
       flashEl.style.animation = 'none';
-      flashEl.offsetHeight; // reflow
+      flashEl.offsetHeight;
       flashEl.style.animation = 'thunderFlash 0.65s ease-out forwards';
       audio.playThunder();
     }
 
     function renderCanvas() {
-      // Background gradient (Stormy Obsidian / Slate Navy)
       const grad = ctx.createLinearGradient(0, 0, 0, height);
       grad.addColorStop(0, '#04060a');
       grad.addColorStop(0.5, '#0b111a');
@@ -1002,19 +1369,17 @@
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, width, height);
 
-      // Distant Ivory Tower Window Mullions (Dark Academia Architecture)
+      // Gothic stone mullions
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
       ctx.lineWidth = 14;
-      // Vertical stone mullions
       ctx.beginPath();
       ctx.moveTo(width * 0.25, 0); ctx.lineTo(width * 0.25, height);
       ctx.moveTo(width * 0.5, 0); ctx.lineTo(width * 0.5, height);
       ctx.moveTo(width * 0.75, 0); ctx.lineTo(width * 0.75, height);
-      // Gothic arch horizontal transom bar
       ctx.moveTo(0, height * 0.28); ctx.lineTo(width, height * 0.28);
       ctx.stroke();
 
-      // Exterior falling rain streaks
+      // Rain streaks
       ctx.strokeStyle = 'rgba(186, 230, 253, 0.22)';
       ctx.lineWidth = 1.2;
       for (let i = 0; i < drops.length; i++) {
@@ -1032,17 +1397,14 @@
         }
       }
 
-      // Interior window condensation drops slowly trickling down
+      // Glass beads
       for (let i = 0; i < glassBeads.length; i++) {
         const b = glassBeads[i];
-        
-        // Water droplet head
         ctx.fillStyle = `rgba(224, 242, 254, ${b.opacity})`;
         ctx.beginPath();
         ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
         ctx.fill();
 
-        // Droplet trickling streak
         ctx.strokeStyle = `rgba(186, 230, 253, ${b.opacity * 0.4})`;
         ctx.lineWidth = b.radius * 0.8;
         ctx.beginPath();
@@ -1052,7 +1414,7 @@
 
         b.y += b.speed;
         if (Math.random() < 0.01) {
-          b.speed = 0.8 + Math.random() * 1.5; // sudden bead slide
+          b.speed = 0.8 + Math.random() * 1.5;
         } else if (b.speed > 0.4) {
           b.speed *= 0.95;
         }
@@ -1070,18 +1432,10 @@
     resizeCanvas();
     renderCanvas();
 
-    // Occasional subtle lightning during tense scenes
-    setInterval(() => {
-      if (Math.random() < 0.08 && State.currentSceneId === 'scene2') {
-        triggerLightning();
-      }
-    }, 14000);
-
     /* =========================================================================
-       4. PROCEDURAL HIGH-DETAIL EXPRESSIVE SVG CHARACTER SPRITES
+       4. PROCEDURAL HIGH-DETAIL EXPRESSIVE SVG SPRITES
        ========================================================================= */
     const CharacterSVGs = {
-      // AURELIA VANYA RAJASA (Aristocratic, Senatorial Blazer, Silver Pin, Silk Scarf)
       Aurelia: (expression = 'calm') => {
         let eyeExpression = `<ellipse cx="140" cy="180" rx="6" ry="7" fill="#1e293b" /><ellipse cx="180" cy="180" rx="6" ry="7" fill="#1e293b" /><circle cx="142" cy="178" r="2.2" fill="#fff" /><circle cx="182" cy="178" r="2.2" fill="#fff" />`;
         let mouthExpression = `<path d="M152 216 Q160 219 168 216" stroke="#c084fc" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
@@ -1091,13 +1445,6 @@
           eyeExpression = `<circle cx="140" cy="180" r="7.5" fill="#0f172a" /><circle cx="180" cy="180" r="7.5" fill="#0f172a" /><circle cx="143" cy="177" r="3" fill="#fff" /><circle cx="183" cy="177" r="3" fill="#fff" />`;
           brows = `<path d="M130 162 Q140 160 150 165" stroke="#1e293b" stroke-width="3" fill="none"/><path d="M170 165 Q180 160 190 162" stroke="#1e293b" stroke-width="3" fill="none"/>`;
           mouthExpression = `<ellipse cx="160" cy="218" rx="5" ry="7" fill="#4c1d95" stroke="#c084fc" stroke-width="1.5" />`;
-        } else if (expression === 'defensive') {
-          brows = `<path d="M132 172 Q142 166 150 164" stroke="#1e293b" stroke-width="3" fill="none"/><path d="M170 164 Q178 166 188 172" stroke="#1e293b" stroke-width="3" fill="none"/>`;
-          mouthExpression = `<line x1="152" y1="216" x2="168" y2="216" stroke="#c084fc" stroke-width="3" stroke-linecap="round"/>`;
-        } else if (expression === 'guilt') {
-          eyeExpression = `<path d="M134 182 Q140 186 146 182" stroke="#334155" stroke-width="3.5" fill="none"/><path d="M174 182 Q180 186 186 182" stroke="#334155" stroke-width="3.5" fill="none"/>`;
-          brows = `<path d="M132 166 Q142 168 150 174" stroke="#1e293b" stroke-width="2.5" fill="none"/><path d="M170 174 Q178 168 188 166" stroke="#1e293b" stroke-width="2.5" fill="none"/>`;
-          mouthExpression = `<path d="M154 219 Q160 216 166 219" stroke="#c084fc" stroke-width="2" fill="none"/>`;
         } else if (expression === 'cornered') {
           eyeExpression = `<circle cx="140" cy="180" r="6" fill="#0f172a" /><circle cx="180" cy="180" r="6" fill="#0f172a" /><circle cx="141" cy="179" r="2" fill="#fff" /><circle cx="181" cy="179" r="2" fill="#fff" />`;
           brows = `<path d="M132 164 Q142 166 150 168" stroke="#1e293b" stroke-width="3" fill="none"/><path d="M170 168 Q178 166 188 164" stroke="#1e293b" stroke-width="3" fill="none"/>`;
@@ -1106,48 +1453,28 @@
 
         return `
         <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
-          <!-- Back Hair -->
           <path d="M90 180 C80 280 85 450 95 560 L225 560 C235 450 240 280 230 180 Z" fill="#090d16"/>
-          <!-- Body / Tailored Senatorial Coat -->
           <path d="M95 580 L110 320 L135 270 L185 270 L210 320 L225 580 Z" fill="#1e1b4b"/>
-          <!-- Silver Embroidery Lapel -->
           <path d="M135 270 L150 420 L160 420 L170 420 L185 270 L160 360 Z" fill="#312e81" stroke="#a5b4fc" stroke-width="1.5"/>
-          <!-- Silk Scarf (Rose-Purple) -->
           <path d="M148 260 Q160 290 172 260 L160 380 Z" fill="#86198f" opacity="0.85"/>
-          <!-- Senatorial Silver Ethics Brooch -->
           <polygon points="160,330 166,340 160,350 154,340" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.5"/>
-          <!-- Neck -->
           <path d="M145 220 L145 270 L175 270 L175 220 Z" fill="#fed7aa"/>
-          <!-- Head / Face -->
           <path d="M120 160 C120 120 200 120 200 160 C200 215 160 245 160 245 C160 245 120 215 120 160 Z" fill="#ffedd5"/>
-          <!-- Hair (Front Bangs & Aristocratic Styling) -->
           <path d="M115 155 C125 110 195 110 205 155 C190 145 175 145 160 165 C145 145 130 145 115 155 Z" fill="#0f172a"/>
-          <!-- Silver Hairpin / Kanzashi Accent -->
           <line x1="190" y1="125" x2="225" y2="105" stroke="#e2e8f0" stroke-width="3" stroke-linecap="round"/>
           <circle cx="225" cy="105" r="4.5" fill="#38bdf8"/>
-          <!-- Expression Features -->
-          ${brows}
-          ${eyeExpression}
-          <!-- Nose -->
+          ${brows} ${eyeExpression}
           <path d="M160 188 L158 198 L162 198" stroke="#fdba74" stroke-width="1.5" fill="none"/>
           ${mouthExpression}
         </svg>`;
       },
 
-      // SERAPHINA KIRANA (Dynamic Debate Star, Golden Lapel Pin, Wavy Auburn/Honey Hair)
       Seraphina: (expression = 'calm') => {
         let eyeExpression = `<ellipse cx="140" cy="180" rx="6.5" ry="7" fill="#78350f" /><ellipse cx="180" cy="180" rx="6.5" ry="7" fill="#78350f" /><circle cx="142" cy="178" r="2.5" fill="#fff" /><circle cx="182" cy="178" r="2.5" fill="#fff" />`;
         let mouthExpression = `<path d="M152 216 Q162 222 170 214" stroke="#ea580c" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
         let brows = `<path d="M130 166 Q142 162 152 168" stroke="#451a03" stroke-width="2.5" fill="none"/><path d="M168 168 Q178 162 190 166" stroke="#451a03" stroke-width="2.5" fill="none"/>`;
 
-        if (expression === 'shocked') {
-          eyeExpression = `<circle cx="140" cy="180" r="7.5" fill="#451a03" /><circle cx="180" cy="180" r="7.5" fill="#451a03" /><circle cx="142" cy="177" r="3" fill="#fff" /><circle cx="182" cy="177" r="3" fill="#fff" />`;
-          brows = `<path d="M130 160 Q142 158 152 164" stroke="#451a03" stroke-width="3" fill="none"/><path d="M168 164 Q178 158 190 160" stroke="#451a03" stroke-width="3" fill="none"/>`;
-          mouthExpression = `<ellipse cx="160" cy="217" rx="5" ry="6" fill="#7c2d12" stroke="#ea580c" stroke-width="1.5" />`;
-        } else if (expression === 'defensive') {
-          brows = `<path d="M130 172 Q142 164 152 162" stroke="#451a03" stroke-width="3.2" fill="none"/><path d="M168 162 Q178 164 190 172" stroke="#451a03" stroke-width="3.2" fill="none"/>`;
-          mouthExpression = `<path d="M152 218 L168 215" stroke="#b91c1c" stroke-width="3" stroke-linecap="round"/>`;
-        } else if (expression === 'cornered') {
+        if (expression === 'cornered') {
           eyeExpression = `<circle cx="140" cy="180" r="6" fill="#451a03" /><circle cx="180" cy="180" r="6" fill="#451a03" /><circle cx="141" cy="179" r="1.5" fill="#fff" /><circle cx="181" cy="179" r="1.5" fill="#fff" />`;
           brows = `<path d="M132 164 Q142 166 150 170" stroke="#451a03" stroke-width="3" fill="none"/><path d="M170 170 Q178 166 188 164" stroke="#451a03" stroke-width="3" fill="none"/>`;
           mouthExpression = `<path d="M152 217 Q160 213 168 218" stroke="#991b1b" stroke-width="2.5" fill="none"/>`;
@@ -1155,80 +1482,47 @@
 
         return `
         <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
-          <!-- Back Hair (Wavy Volume) -->
           <path d="M80 180 C60 280 75 460 90 560 L230 560 C245 460 260 280 240 180 Z" fill="#451a03"/>
-          <!-- Blazer (Sharp Charcoal Navy) -->
           <path d="M90 580 L105 310 L135 265 L185 265 L215 310 L230 580 Z" fill="#172554"/>
-          <!-- Golden Debate Lapel -->
           <path d="M135 265 L150 410 L170 410 L185 265 L160 350 Z" fill="#1e3a8a" stroke="#fbbf24" stroke-width="1.8"/>
-          <!-- Golden Champion Debate Emblem -->
           <circle cx="142" cy="315" r="5" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>
-          <!-- Inner Cream Blouse -->
           <polygon points="148,265 172,265 160,340" fill="#fef3c7"/>
-          <!-- Neck -->
           <path d="M145 220 L145 265 L175 265 L175 220 Z" fill="#fed7aa"/>
-          <!-- Head / Face -->
           <path d="M120 160 C120 120 200 120 200 160 C200 215 160 245 160 245 C160 245 120 215 120 160 Z" fill="#ffedd5"/>
-          <!-- Front Wavy Auburn Hair -->
           <path d="M110 155 C120 95 200 95 210 155 C195 135 175 140 155 160 C135 140 120 135 110 155 Z" fill="#78350f"/>
           <path d="M110 155 C95 200 100 270 115 320" stroke="#78350f" stroke-width="14" fill="none" stroke-linecap="round"/>
           <path d="M210 155 C225 200 220 270 205 320" stroke="#78350f" stroke-width="14" fill="none" stroke-linecap="round"/>
-          <!-- Features -->
-          ${brows}
-          ${eyeExpression}
-          <!-- Nose -->
+          ${brows} ${eyeExpression}
           <path d="M160 188 L158 197 L162 197" stroke="#fdba74" stroke-width="1.5" fill="none"/>
           ${mouthExpression}
         </svg>`;
       },
 
-      // NADINE LARASATI (Forensic Data Archivist, Cardigan, Round Silver Glasses, Bun)
       Nadine: (expression = 'calm') => {
         let eyeExpression = `<ellipse cx="140" cy="180" rx="5.5" ry="6.5" fill="#047857" /><ellipse cx="180" cy="180" rx="5.5" ry="6.5" fill="#047857" /><circle cx="142" cy="178" r="2" fill="#fff" /><circle cx="182" cy="178" r="2" fill="#fff" />`;
         let mouthExpression = `<path d="M154 216 Q160 219 166 216" stroke="#059669" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
         let brows = `<path d="M132 168 Q142 166 150 168" stroke="#1c1917" stroke-width="2" fill="none"/><path d="M170 168 Q178 166 188 168" stroke="#1c1917" stroke-width="2" fill="none"/>`;
 
-        if (expression === 'shocked') {
-          eyeExpression = `<circle cx="140" cy="180" r="7" fill="#065f46" /><circle cx="180" cy="180" r="7" fill="#065f46" /><circle cx="142" cy="177" r="2.8" fill="#fff" /><circle cx="182" cy="177" r="2.8" fill="#fff" />`;
-          brows = `<path d="M132 162 Q142 160 150 164" stroke="#1c1917" stroke-width="2.5" fill="none"/><path d="M170 164 Q178 160 188 162" stroke="#1c1917" stroke-width="2.5" fill="none"/>`;
-          mouthExpression = `<ellipse cx="160" cy="217" rx="4" ry="5" fill="#047857" stroke="#a7f3d0" stroke-width="1.2" />`;
-        } else if (expression === 'defensive') {
-          mouthExpression = `<line x1="154" y1="216" x2="166" y2="216" stroke="#059669" stroke-width="2.5" stroke-linecap="round"/>`;
-        }
-
         return `
         <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
-          <!-- Hair Bun Behind -->
           <circle cx="160" cy="100" r="32" fill="#292524"/>
-          <!-- Knitted Cozy Emerald Cardigan -->
           <path d="M90 580 L105 320 L130 270 L190 270 L215 320 L230 580 Z" fill="#064e3b"/>
           <path d="M130 270 L145 440 L175 440 L190 270 L160 380 Z" fill="#047857" stroke="#6ee7b7" stroke-width="1"/>
-          <!-- Server Room Keycard Lanyard -->
           <path d="M148 270 L160 390 L172 270" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
           <rect x="152" y="390" width="16" height="24" rx="2" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
           <line x1="155" y1="398" x2="165" y2="398" stroke="#38bdf8" stroke-width="1.5"/>
-          <!-- Neck -->
           <path d="M145 220 L145 270 L175 270 L175 220 Z" fill="#fcd34d"/>
-          <!-- Head / Face -->
           <path d="M120 160 C120 120 200 120 200 160 C200 215 160 245 160 245 C160 245 120 215 120 160 Z" fill="#fef08a"/>
-          <!-- Front Soft Brown Hair -->
           <path d="M115 155 C125 105 195 105 205 155 C190 145 160 148 115 155 Z" fill="#292524"/>
-          <path d="M115 155 C110 190 115 230 122 250" stroke="#292524" stroke-width="8" fill="none" stroke-linecap="round"/>
-          <path d="M205 155 C210 190 205 230 198 250" stroke="#292524" stroke-width="8" fill="none" stroke-linecap="round"/>
-          <!-- Thin Round Silver Spectacles -->
           <circle cx="140" cy="180" r="14" fill="none" stroke="#cbd5e1" stroke-width="2.5"/>
           <circle cx="180" cy="180" r="14" fill="none" stroke="#cbd5e1" stroke-width="2.5"/>
           <line x1="154" y1="180" x2="166" y2="180" stroke="#cbd5e1" stroke-width="2.5"/>
-          <!-- Features -->
-          ${brows}
-          ${eyeExpression}
-          <!-- Nose -->
+          ${brows} ${eyeExpression}
           <path d="M160 188 L158 198 L162 198" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
           ${mouthExpression}
         </svg>`;
       },
 
-      // DION PRATAMA (Smug Politician Demeanor, Navy Suit, Gelled Hair)
       Dion: (expression = 'calm') => {
         let eyeExpression = `<ellipse cx="140" cy="180" rx="6" ry="6" fill="#1e293b" /><ellipse cx="180" cy="180" rx="6" ry="6" fill="#1e293b" /><circle cx="142" cy="178" r="1.8" fill="#fff" /><circle cx="182" cy="178" r="1.8" fill="#fff" />`;
         let mouthExpression = `<path d="M152 216 Q162 222 170 214" stroke="#991b1b" stroke-width="2.5" fill="none"/>`;
@@ -1242,50 +1536,32 @@
 
         return `
         <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
-          <!-- Sleek Politician Suit (Deep Navy) -->
           <path d="M90 580 L105 310 L135 260 L185 260 L215 310 L230 580 Z" fill="#0f172a"/>
-          <!-- Lapel & Silk Tie -->
           <path d="M135 260 L150 420 L170 420 L185 260 L160 340 Z" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
           <polygon points="156,260 164,260 160,380" fill="#dc2626"/>
-          <!-- Gold Watch / Pin -->
           <circle cx="140" cy="305" r="4" fill="#fbbf24"/>
-          <!-- Neck -->
           <path d="M145 220 L145 260 L175 260 L175 220 Z" fill="#fed7aa"/>
-          <!-- Head / Face -->
           <path d="M120 160 C120 120 200 120 200 160 C200 215 160 245 160 245 C160 245 120 215 120 160 Z" fill="#ffedd5"/>
-          <!-- Gelled Modern Haircut -->
           <path d="M115 150 C120 100 200 95 208 140 C195 130 175 135 155 145 C135 135 120 135 115 150 Z" fill="#090d16"/>
-          <!-- Features -->
-          ${brows}
-          ${eyeExpression}
-          <!-- Nose -->
+          ${brows} ${eyeExpression}
           <path d="M160 188 L158 198 L163 198" stroke="#fdba74" stroke-width="1.5" fill="none"/>
           ${mouthExpression}
         </svg>`;
       },
 
-      // KAELEN VANCE (Protagonist / Auditor, Titanium Wire Glasses, Charcoal Coat)
       Kael: (expression = 'calm') => {
         return `
         <svg viewBox="0 0 320 600" class="w-full h-full filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.8)]">
-          <!-- Heavy Charcoal Trench / Auditor Coat -->
           <path d="M85 580 L100 310 L135 255 L185 255 L220 310 L235 580 Z" fill="#090d16"/>
-          <!-- High Stiff Collar -->
           <path d="M125 255 L135 230 L150 255 Z" fill="#1e293b"/>
           <path d="M195 255 L185 230 L170 255 Z" fill="#1e293b"/>
-          <!-- Auditor Silver Foundation Pin -->
           <polygon points="142,280 148,270 148,290" fill="#7dd3fc" stroke="#38bdf8" stroke-width="1"/>
-          <!-- Neck -->
           <path d="M145 210 L145 255 L175 255 L175 210 Z" fill="#f8fafc"/>
-          <!-- Head / Face -->
           <path d="M120 155 C120 115 200 115 200 155 C200 210 160 240 160 240 C160 240 120 210 120 155 Z" fill="#f1f5f9"/>
-          <!-- Dark Tousled Hair -->
           <path d="M112 150 C118 95 202 95 208 145 C190 135 170 140 150 150 C130 140 118 140 112 150 Z" fill="#020617"/>
-          <!-- Titanium Wire Glasses (Cold Analytical Framing) -->
           <rect x="128" y="168" width="26" height="18" rx="2" fill="none" stroke="#7dd3fc" stroke-width="2"/>
           <rect x="166" y="168" width="26" height="18" rx="2" fill="none" stroke="#7dd3fc" stroke-width="2"/>
           <line x1="154" y1="177" x2="166" y2="177" stroke="#7dd3fc" stroke-width="2"/>
-          <!-- Calm Calculated Gaze -->
           <ellipse cx="141" cy="177" rx="4" ry="4" fill="#0284c7" />
           <ellipse cx="179" cy="177" rx="4" ry="4" fill="#0284c7" />
           <line x1="152" y1="214" x2="168" y2="214" stroke="#475569" stroke-width="2.5" stroke-linecap="round"/>
@@ -1294,11 +1570,11 @@
     };
 
     /* =========================================================================
-       5. NARRATIVE SCRIPT & BRANCHING NODES (BAHASA INDONESIA)
+       5. NARRATIVE SCRIPT & BRANCHING NODES
        ========================================================================= */
     const STORY_DATABASE = {
       
-      // ==================== SCENE 1: BAYANGAN DI BALIK KACA ====================
+      // SCENE 1
       scene1: [
         {
           id: 's1_n1',
@@ -1306,8 +1582,7 @@
           title: 'Ruang Tunggu ICU — Kilas Balik 6 Bulan Lalu',
           text: 'Suara monitor detak jantung berdengung monoton. Lampu neon rumah sakit berkedip redup di bawah hujan lebat yang menghantam jendela kaca lantai empat.',
           microSight: null,
-          sprite: { character: null },
-          bgDarken: true
+          sprite: { character: null }
         },
         {
           id: 's1_n2',
@@ -1350,14 +1625,12 @@
             {
               text: '"Apakah semua data transaksi dan checksum heksadesimal sudah siap, Nadine? Kita tidak punya banyak waktu."',
               effects: { coldness: +5, empathy: -5, authority: +5 },
-              insightUnlock: false,
               toast: 'Kalkulasi Dingin Menguat (+5 Coldness)',
               nextNode: 's1_choice_cold'
             },
             {
               text: '"Senang melihatmu masih menjaga arsip ini, Nadine. Tehmu harum... mengingatkanku bahwa ada yang belum membeku di sini."',
               effects: { coldness: -5, empathy: +10, affectionNadine: +10 },
-              insightUnlock: true,
               toast: 'Resonansi Emosional Nadine Terbuka (+10 Empathy)',
               nextNode: 's1_choice_warm'
             }
@@ -1400,7 +1673,7 @@
         }
       ],
 
-      // ==================== SCENE 2: RUANG SIDANG UTAMA SENAT (MAIN DEBATE) ====================
+      // SCENE 2
       scene2: [
         {
           id: 's2_n1',
@@ -1563,13 +1836,13 @@
         }
       ],
 
-      // ==================== SCENE 3: RETAKAN DI KORIDOR HUJAN (BRANCHING) ====================
+      // SCENE 3 HUB
       scene3_hub: [
         {
           id: 's3_hub_n1',
           speaker: 'Narator',
           title: 'Koridor Menara Gading yang Lengang',
-          text: 'Sidang telah usai. Ruang pleno dikosongkan. Suara gemuruh petir dan rintik hujan di kaca koridor terasa lebih dekat, memantulkan bayangan bayang-bayang di dinding marmer.',
+          text: 'Sidang telah usai. Ruang pleno dikosongkan. Suara gemuruh petir dan rintik hujan di kaca koridor terasa lebih dekat, memantulkan bayangan di dinding marmer.',
           microSight: null,
           sprite: { character: null }
         },
@@ -1601,7 +1874,7 @@
         }
       ],
 
-      // ----- ROUTE A: AURELIA VANYA RAJASA -----
+      // ROUTE AURELIA
       route_aurelia: [
         {
           id: 'route_aurelia_start',
@@ -1670,7 +1943,7 @@
           text: 'Kael... terima kasih. Jika kamu butuh kunci arsip khusus dekanat untuk membongkar faksi Dion hingga ke akar-akarnya, aku akan menjadi sekutumu.',
           microSight: 'Ketegangan di pundak Aurelia mereda. Untuk pertama kalinya dalam enam bulan, senyum tipis yang tulus tersungging di bibirnya.',
           sprite: { character: 'Aurelia', expression: 'calm' },
-          nextScene: 'scene4'
+          onEnter: () => setTimeout(activateCampusMap, 1500)
         },
         {
           id: 'route_aurelia_cold',
@@ -1679,11 +1952,11 @@
           text: 'Mungkin kamu benar... Hukumlah aku semaumu, Auditor Vance. Tapi ketahuilah, menara ini akan menuntut jiwamu jika kamu terus membiarkan hatimu membeku.',
           microSight: 'Aurelia memalingkan wajahnya menatap hujan malam. Hubungan kami terkunci dalam batas formalitas audit yang dingin.',
           sprite: { character: 'Aurelia', expression: 'defensive' },
-          nextScene: 'scene4'
+          onEnter: () => setTimeout(activateCampusMap, 1500)
         }
       ],
 
-      // ----- ROUTE B: SERAPHINA KIRANA -----
+      // ROUTE SERAPHINA
       route_seraphina: [
         {
           id: 'route_sera_start',
@@ -1744,7 +2017,7 @@
           text: 'Aku berjanji, Kael. Besok pagi, aku sendiri yang akan membongkar kebohongan Dion di podium. Terima kasih... karena tidak membuangku ke kegelapan yang sama.',
           microSight: 'Napas lega Sera terdengar jelas. Ia menatap Kael bukan lagi sebagai rival yang dibenci, melainkan sosok penentu arah hidupnya.',
           sprite: { character: 'Seraphina', expression: 'calm' },
-          nextScene: 'scene4'
+          onEnter: () => setTimeout(activateCampusMap, 1500)
         },
         {
           id: 'route_sera_subjugate',
@@ -1753,11 +2026,11 @@
           text: 'Baik... Ini sandi akses audionya. Ambil semuanya. Ternyata kamu jauh lebih kejam dan mengerikan daripada Dion...',
           microSight: 'Sera menatap Kael dengan ketakutan mendalam. Batas antara rasa hormat dan teror telah lenyap.',
           sprite: { character: 'Seraphina', expression: 'cornered' },
-          nextScene: 'scene4'
+          onEnter: () => setTimeout(activateCampusMap, 1500)
         }
       ],
 
-      // ----- ROUTE C: NADINE LARASATI -----
+      // ROUTE NADINE
       route_nadine: [
         {
           id: 'route_nadine_start',
@@ -1818,7 +2091,7 @@
           text: 'Kamu tidak akan menjadi monster, Kael. Selama kamu masih kembali ke ruangan ini, aku akan selalu menjadi cermin yang mengingatkan siapa dirimu sebenarnya.',
           microSight: 'Sorot mata Nadine berbinar lembut. Rasa aman dan keterikatan batin kami mengunci kehangatan di tengah badai malam.',
           sprite: { character: 'Nadine', expression: 'calm' },
-          nextScene: 'scene4'
+          onEnter: () => setTimeout(activateCampusMap, 1500)
         },
         {
           id: 'route_nadine_guarded',
@@ -1827,17 +2100,17 @@
           text: 'Jika itu pilihanmu untuk bertahan hidup, aku akan menghormatinya. Tapi minumlah tehnya sebelum dingin... Ruangan ini butuh sedikit kehangatan.',
           microSight: 'Nadine menghela napas pelan dengan senyum penuh pengertian. Ia tetap menjadi pelabuhan setiaku.',
           sprite: { character: 'Nadine', expression: 'calm' },
-          nextScene: 'scene4'
+          onEnter: () => setTimeout(activateCampusMap, 1500)
         }
       ],
 
-      // ==================== SCENE 4: EVALUASI TEMPERATUR BATIN (SUMMARY) ====================
+      // SCENE 4: EVALUATION
       scene4: [
         {
           id: 's4_n1',
           speaker: 'Kael',
           title: 'Special Auditor Yayasan',
-          text: 'Malam semakin larut. Laporan audit Bab 1 telah difinalisasi dan disegel dengan kode verifikasi Dewan Pembina Yayasan. Saatnya memeriksa neraca psikologis batinku.',
+          text: 'Malam semakin larut. Seluruh sidang dan investigasi kampus telah usai. Saatnya membuka segel audit akhir untuk memeriksa evaluasi temperatur batinku.',
           microSight: null,
           sprite: { character: 'Kael', expression: 'calm' },
           onEnter: () => showEndingReport()
@@ -1846,7 +2119,7 @@
     };
 
     /* =========================================================================
-       6. DIALOGUE SYSTEM & TYPEWRITER ENGINE
+       6. DIALOGUE & TYPEWRITER ENGINE
        ========================================================================= */
     function getCurrentNode() {
       const scene = STORY_DATABASE[State.currentSceneId];
@@ -1860,19 +2133,17 @@
 
       if (node.onEnter) node.onEnter();
 
-      // Update Top Scene Badge
       const sceneTitleMap = {
         scene1: 'Prolog: Bayangan di Balik Kaca',
         scene2: 'Bab 1: Variabel Keempat yang Hilang',
         scene3_hub: 'Bab 1: Retakan di Koridor Hujan',
-        route_aurelia: 'Bab 1: Rute Aurelia — Balik Tabir Penebusan',
-        route_seraphina: 'Bab 1: Rute Seraphina — Retorika yang Tunduk',
-        route_nadine: 'Bab 1: Rute Nadine — Di Bawah Suaka Rubanah',
+        route_aurelia: 'Bab 1: Rute Aurelia — Tabir Penebusan',
+        route_seraphina: 'Bab 1: Rute Seraphina — Retorika Tunduk',
+        route_nadine: 'Bab 1: Rute Nadine — Suaka Rubanah',
         scene4: 'Bab 1: Evaluasi Temperatur Batin'
       };
       document.getElementById('sceneTitleText').innerText = sceneTitleMap[State.currentSceneId] || 'Sidang Berlangsung';
 
-      // Update Speaker details
       State.activeSpeaker = node.speaker;
       document.getElementById('speakerName').innerText = node.speaker;
       document.getElementById('speakerTitle').innerText = node.title || 'Subjek Sidang';
@@ -1889,7 +2160,6 @@
       badge.style.backgroundColor = colorMap[node.speaker] || '#38bdf8';
       badge.style.boxShadow = `0 0 10px ${colorMap[node.speaker] || '#38bdf8'}`;
 
-      // Update Micro-Expression Sight Box
       const sightBox = document.getElementById('microSightBox');
       const sightText = document.getElementById('microSightText');
       if (node.microSight && State.resonance >= 40) {
@@ -1902,12 +2172,9 @@
         sightBox.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
       }
 
-      // Update Character Sprites on Stage
       updateCharacterSprites(node.sprite, node.speaker);
 
-      // Render Dialogue with Typewriter
       startTypewriter(node.text, () => {
-        // Callback when typewriter finishes
         if (node.choices && node.choices.length > 0) {
           renderChoices(node.choices);
         } else {
@@ -1918,7 +2185,6 @@
         }
       });
 
-      // Add to History
       State.history.push({
         speaker: node.speaker,
         title: node.title,
@@ -2003,18 +2269,10 @@
             audio.playHeartbeat();
           }
 
-          // Apply stat effects
-          if (choice.effects) {
-            applyStatEffects(choice.effects);
-          }
-          if (choice.toast) {
-            showToast(choice.toast);
-          }
-          if (choice.leverageBurnt !== undefined) {
-            State.leverageBurnt = choice.leverageBurnt;
-          }
+          if (choice.effects) applyStatEffects(choice.effects);
+          if (choice.toast) showToast(choice.toast);
+          if (choice.leverageBurnt !== undefined) State.leverageBurnt = choice.leverageBurnt;
 
-          // Move to next node
           if (choice.nextNode) {
             jumpToNodeById(choice.nextNode);
           } else {
@@ -2027,7 +2285,6 @@
     }
 
     function jumpToNodeById(targetId) {
-      // Search in current scene first
       const scene = STORY_DATABASE[State.currentSceneId];
       const idx = scene.findIndex(n => n.id === targetId);
       if (idx !== -1) {
@@ -2035,7 +2292,6 @@
         renderCurrentDialogue();
         return;
       }
-      // Search across all scenes
       for (const scId in STORY_DATABASE) {
         const found = STORY_DATABASE[scId].findIndex(n => n.id === targetId);
         if (found !== -1) {
@@ -2055,11 +2311,8 @@
 
       const node = getCurrentNode();
       if (!node) return;
-
-      // Check if choices are pending
       if (node.choices && node.choices.length > 0) return;
 
-      // Handle direct jumps or next scene
       if (node.jumpTo) {
         jumpToNodeById(node.jumpTo);
         return;
@@ -2075,14 +2328,15 @@
         State.currentNodeIndex++;
         renderCurrentDialogue();
       } else {
-        // End of scene
         if (State.currentSceneId === 'scene1') jumpToScene('scene2');
         else if (State.currentSceneId === 'scene2') jumpToScene('scene3_hub');
-        else if (State.currentSceneId.startsWith('route_')) jumpToScene('scene4');
+        else if (State.currentSceneId.startsWith('route_')) activateCampusMap();
       }
     }
 
     function jumpToScene(sceneId) {
+      deactivateCampusMap();
+      deactivateDebateBattle();
       if (sceneId === 'scene3_hub') {
         State.currentSceneId = 'scene3_hub';
         State.currentNodeIndex = 0;
@@ -2125,7 +2379,6 @@
       document.getElementById('authorityVal').innerText = `${State.authority}%`;
       document.getElementById('resonanceVal').innerText = `${State.resonance}%`;
 
-      // Thermometer Bar Fill & Label
       const bar = document.getElementById('thermometerBar');
       bar.style.width = `${State.coldness}%`;
 
@@ -2144,7 +2397,6 @@
         stateLabel.className = 'text-slate-300 font-serif-title tracking-wider px-2 py-0.5 rounded bg-slate-900/60 border border-slate-700/50';
       }
 
-      // Dynamic Frost Vignette scaling when Coldness > 75%
       const frost = document.getElementById('frostVignette');
       if (State.coldness > 75) {
         const opacity = ((State.coldness - 75) / 25) * 0.95;
@@ -2153,7 +2405,6 @@
         frost.style.opacity = '0';
       }
 
-      // Resonance Indicator
       const resIndicator = document.getElementById('sightActiveIndicator');
       if (State.resonance >= 40) {
         resIndicator.classList.remove('bg-slate-600');
@@ -2167,6 +2418,14 @@
       document.getElementById('codexRelAurelia').innerText = State.affection.aurelia >= 50 ? 'Sekutu Rahasia (55%)' : 'Rasa Bersalah Terpendam';
       document.getElementById('codexRelSeraphina').innerText = State.affection.seraphina >= 40 ? 'Penebusan & Pembelot (45%)' : 'Arogansi Defensif';
       document.getElementById('codexRelNadine').innerText = `Suaka Teduh (${State.affection.nadine}%)`;
+
+      // Update Evidence 4 badge
+      if (State.hasEvidence4) {
+        document.getElementById('ledgerBadge').innerText = '4';
+        document.getElementById('ledgerCard4').classList.remove('hidden');
+        document.getElementById('btnDebateEvidence4').classList.remove('hidden');
+        document.getElementById('btnDebateEvidence4').classList.add('flex');
+      }
     }
 
     function showToast(message) {
@@ -2181,7 +2440,7 @@
     }
 
     /* =========================================================================
-       8. CHARACTER SPRITE RENDERER & ACTIVE SPEAKER HIGHLIGHTING
+       8. CHARACTER SPRITE RENDERER
        ========================================================================= */
     function updateCharacterSprites(spriteData, activeSpeaker) {
       const allSprites = {
@@ -2192,7 +2451,6 @@
         Kael: document.getElementById('spriteKael')
       };
 
-      // Hide all first
       Object.keys(allSprites).forEach(char => {
         const el = allSprites[char];
         el.className = 'sprite-container sprite-hidden absolute bottom-0 flex items-end justify-center';
@@ -2208,13 +2466,11 @@
         const svgWrapper = targetEl.querySelector('.sprite-svg-wrapper');
         svgWrapper.innerHTML = CharacterSVGs[charName](expression);
 
-        // Highlight if active speaker
         const isSpeaker = (activeSpeaker === charName);
         targetEl.className = `sprite-container ${isSpeaker ? 'sprite-active' : 'sprite-inactive'} absolute bottom-0 flex items-end justify-center`;
       }
     }
 
-    // Populate Codex Avatars on load
     function initCodexAvatars() {
       document.getElementById('codexAvatarAurelia').innerHTML = CharacterSVGs.Aurelia('calm');
       document.getElementById('codexAvatarSeraphina').innerHTML = CharacterSVGs.Seraphina('calm');
@@ -2222,7 +2478,279 @@
     }
 
     /* =========================================================================
-       9. MODAL HANDLERS & BACKLOG
+       9. FITUR BARU 1: PETA KAMPUS (DAY/NIGHT ACTION PHASE)
+       ========================================================================= */
+    function activateCampusMap() {
+      closeSceneJumpModal();
+      deactivateDebateBattle();
+      document.getElementById('dialogueContainer').classList.add('opacity-0', 'pointer-events-none');
+      
+      const mapEl = document.getElementById('campusMapScreen');
+      mapEl.classList.remove('opacity-0', 'pointer-events-none');
+      mapEl.classList.add('opacity-100', 'pointer-events-auto');
+
+      document.getElementById('sceneTitleText').innerText = 'Fase Aksi: Peta Kampus Pradipta';
+      updateMapUI();
+      audio.playChime();
+      showToast('Fase Aksi Kampus Dimulai! Anda memiliki 3 Action Points.');
+    }
+
+    function deactivateCampusMap() {
+      const mapEl = document.getElementById('campusMapScreen');
+      mapEl.classList.add('opacity-0', 'pointer-events-none');
+      mapEl.classList.remove('opacity-100', 'pointer-events-auto');
+      document.getElementById('dialogueContainer').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function updateMapUI() {
+      document.getElementById('apTextCount').innerText = `${State.actionPoints} / 3 TERSISA`;
+      const crystalsContainer = document.getElementById('apCrystals');
+      crystalsContainer.innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        const span = document.createElement('span');
+        span.className = i < State.actionPoints ? 'text-cyan-400 font-bold' : 'text-slate-700';
+        span.innerText = '◆';
+        crystalsContainer.appendChild(span);
+      }
+
+      const times = ['Pagi Hari', 'Siang Hari', 'Sore Hari', 'Malam Menjelang Sidang'];
+      const timeIndex = 3 - State.actionPoints;
+      document.getElementById('mapTimeLabel').innerText = `WAKTU: ${times[Math.min(3, timeIndex)]}`;
+    }
+
+    function visitLocation(locationKey) {
+      if (State.actionPoints <= 0) {
+        showToast('Action Points habis! Bersiaplah menuju Sidang Jumat.');
+        setTimeout(startFridayDebateBattle, 1200);
+        return;
+      }
+
+      audio.playChime();
+      State.actionPoints--;
+      State.visitedLocations[locationKey]++;
+      updateMapUI();
+
+      if (locationKey === 'etik') {
+        applyStatEffects({ authority: +10, affectionAurelia: +15, resonance: +5 });
+        showToast('Ruang Komisi Etik: Aurelia membocorkan celah regulasi senat! (+10 Otoritas)');
+      } else if (locationKey === 'debat') {
+        applyStatEffects({ resonance: +15, affectionSera: +15, empathy: +5 });
+        showToast('Podium Debat: Sera menyerahkan rekaman tekanan Dion! (+15 Resonansi)');
+      } else if (locationKey === 'arsip') {
+        applyStatEffects({ empathy: +15, coldness: -10, affectionNadine: +15 });
+        showToast('Arsip Bawah Tanah: Teh hangat Nadine memulihkan ketenangan! (+15 Empati)');
+      } else if (locationKey === 'dekanat') {
+        State.hasEvidence4 = true;
+        applyStatEffects({ authority: +15, coldness: +10 });
+        audio.playGlassShatter();
+        showToast('⚡ BUKTI 04 DITEMUKAN: Draft Kontrak Konsorsium Gelap Rp1.2 Miliar!');
+      }
+
+      updateHUD();
+
+      if (State.actionPoints === 0) {
+        setTimeout(() => {
+          showToast('Hari berganti. Fajar Hari Jumat menyingsing. Sidang Dewan Komisaris dimulai!');
+          setTimeout(startFridayDebateBattle, 1800);
+        }, 1500);
+      }
+    }
+
+    function skipToFridayDebate() {
+      audio.playChime();
+      startFridayDebateBattle();
+    }
+
+    /* =========================================================================
+       10. FITUR BARU 2: DEBATE BATTLE TURN-BASED (VS DION PRATAMA)
+       ========================================================================= */
+    const DEBATE_ROUNDS = [
+      {
+        round: 1,
+        speech: '"Dewan Komisaris yang terhormat! Kaelen Vance menggunakan audit ini murni untuk balas dendam pribadi atas skorsing masa lalunya! Lisensi server Rp40 Juta adalah hibah legal demi nama baik delegasi nasional!"',
+        tone: 'Agresi Retoris & Fitnah',
+        vulnerability: 'Dion mencengkeram map kas; pupilnya bergetar menghindari Komisi Etik. Titik patah: [BUKTI 02] Log Pencairan Kas Ilegal atau Serangan Otoritas Regulasi Yayasan!',
+        weakEvidence: 'bukti2'
+      },
+      {
+        round: 2,
+        speech: '"Bahkan jika baris ke-412 itu identik, itu 100% kelalaian teknis Seraphina Kirana! Saya hanyalah koordinator administratif umum, jangan limpahkan kecerobohan tim riset kepada saya!"',
+        tone: 'Manipulasi & Kambing Hitam',
+        vulnerability: 'Dion menunjuk Sera dengan agresif; detak nadinya melonjak ke 120 bpm. Titik patah: [BUKTI 01] Checksum Heksadesimal atau Bedah Resonansi Kebohongan!',
+        weakEvidence: 'bukti1'
+      },
+      {
+        round: 3,
+        speech: '"Menara Gading ini didanai oleh donasi yayasan keluarga saya! Jika proposal ini dibatalkan, proyek digitalisasi akan ditarik dan akreditasi fakultas ini akan hancur! Kalian tidak punya hak mengadili saya!"',
+        tone: 'Intimidasi Dinasti & Patronase',
+        vulnerability: 'Dion kehabisan retorika logis dan beralih ke ancaman dinasti. Titik patah mutlak: [BUKTI 04] Draft Kontrak Konsorsium Gelap Rektorat!',
+        weakEvidence: 'bukti4'
+      }
+    ];
+
+    function startFridayDebateBattle() {
+      deactivateCampusMap();
+      closeSceneJumpModal();
+      document.getElementById('dialogueContainer').classList.add('opacity-0', 'pointer-events-none');
+
+      const debateEl = document.getElementById('debateBattleScreen');
+      debateEl.classList.remove('opacity-0', 'pointer-events-none');
+      debateEl.classList.add('opacity-100', 'pointer-events-auto');
+
+      State.debate.active = true;
+      State.debate.kaelHp = 100;
+      State.debate.dionHp = 100;
+      State.debate.round = 1;
+      State.debate.isDionStunned = false;
+
+      document.getElementById('sceneTitleText').innerText = 'Sidang Dewan: Pertarungan Debat vs Dion';
+      document.getElementById('battleKaelSvg').innerHTML = CharacterSVGs.Kael('calm');
+      document.getElementById('battleDionSvg').innerHTML = CharacterSVGs.Dion('calm');
+
+      document.getElementById('batStatAuth').innerText = State.authority;
+      document.getElementById('batStatRes').innerText = State.resonance;
+
+      updateDebateBattleUI();
+      triggerLightning();
+      audio.playChime();
+      showToast('Sidang Dewan Komisaris Dimulai! Patahkan 3 argumen Dion!');
+    }
+
+    function deactivateDebateBattle() {
+      const debateEl = document.getElementById('debateBattleScreen');
+      debateEl.classList.add('opacity-0', 'pointer-events-none');
+      debateEl.classList.remove('opacity-100', 'pointer-events-auto');
+      State.debate.active = false;
+      document.getElementById('dialogueContainer').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function updateDebateBattleUI() {
+      const currentR = DEBATE_ROUNDS[State.debate.round - 1];
+      if (currentR) {
+        document.getElementById('debateRoundBadge').innerText = `RONDE ${State.debate.round} / 3`;
+        document.getElementById('dionSpeechText').innerText = currentR.speech;
+        document.getElementById('dionToneLabel').innerText = `Gaya: ${currentR.tone}`;
+        document.getElementById('dionVulnerabilityText').innerText = currentR.vulnerability;
+      }
+
+      document.getElementById('kaelComposureText').innerText = `Ketenangan: ${State.debate.kaelHp}/100`;
+      document.getElementById('kaelHpBar').style.width = `${State.debate.kaelHp}%`;
+
+      document.getElementById('dionCredibilityText').innerText = `Kredibilitas: ${State.debate.dionHp}/100`;
+      document.getElementById('dionHpBar').style.width = `${State.debate.dionHp}%`;
+
+      if (State.debate.dionHp <= 30) {
+        document.getElementById('battleDionSvg').innerHTML = CharacterSVGs.Dion('cornered');
+        document.getElementById('dionBattleState').innerText = 'Panik & Terpojok';
+      } else if (State.debate.dionHp <= 65) {
+        document.getElementById('battleDionSvg').innerHTML = CharacterSVGs.Dion('shocked');
+        document.getElementById('dionBattleState').innerText = 'Gemetar Menahan Malu';
+      } else {
+        document.getElementById('battleDionSvg').innerHTML = CharacterSVGs.Dion('calm');
+        document.getElementById('dionBattleState').innerText = 'Defensif Agresif';
+      }
+    }
+
+    function executeDebateAction(type) {
+      if (!State.debate.active) return;
+      audio.playChime();
+
+      let dmg = 0;
+      let log = '';
+
+      if (type === 'authority') {
+        dmg = Math.floor(25 + (State.authority * 0.15));
+        State.debate.dionHp = Math.max(0, State.debate.dionHp - dmg);
+        log = `⚡ Serangan Otoritas: Kaelen membacakan Statuta Audit Pasal 12! (-${dmg} Kredibilitas Dion)`;
+      } else if (type === 'resonance') {
+        dmg = Math.floor(20 + (State.resonance * 0.15));
+        State.debate.dionHp = Math.max(0, State.debate.dionHp - dmg);
+        State.debate.isDionStunned = true;
+        audio.playHeartbeat();
+        log = `👁️ Bedah Resonansi: Menyingkap kedipan panik Dion! Dion terbungkam untuk ronde ini! (-${dmg} Kredibilitas)`;
+      }
+
+      document.getElementById('battleLogText').innerText = log;
+      updateDebateBattleUI();
+      checkDebateProgress();
+    }
+
+    function openDebateLeverageModal() {
+      audio.playChime();
+      document.getElementById('modalDebateLeverage').classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeDebateLeverageModal() {
+      document.getElementById('modalDebateLeverage').classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function deployEvidenceInDebate(evidenceKey) {
+      closeDebateLeverageModal();
+      const currentR = DEBATE_ROUNDS[State.debate.round - 1];
+
+      let isCritical = (currentR && currentR.weakEvidence === evidenceKey);
+      let dmg = isCritical ? 50 : 25;
+
+      audio.playGlassShatter();
+      document.body.classList.add('shatter-shake');
+      setTimeout(() => document.body.classList.remove('shatter-shake'), 500);
+
+      State.debate.dionHp = Math.max(0, State.debate.dionHp - dmg);
+
+      if (isCritical) {
+        triggerLightning();
+        document.getElementById('battleLogText').innerText = `💥 SKAKMAT KRITIS! Bukti Forensik menghancurkan alibi Dion secara mutlak! (-${dmg} Kredibilitas)`;
+        showToast('SKAKMAT KRITIS: Kredibilitas Dion Hancur Lebur!');
+      } else {
+        document.getElementById('battleLogText').innerText = `Bukti diajukan ke Dewan Komisaris. Memberikan tekanan audit (-${dmg} Kredibilitas).`;
+      }
+
+      updateDebateBattleUI();
+      checkDebateProgress();
+    }
+
+    function checkDebateProgress() {
+      if (State.debate.dionHp <= 0) {
+        // VICTORY!
+        triggerLightning();
+        audio.playGlassShatter();
+        document.getElementById('battleLogText').innerText = '🏆 SKAKMAT TOTAL! Dion Pratama kehilangan seluruh kredibilitas di hadapan Dewan!';
+        showToast('KEMENANGAN AUDIT: Dion Dinyatakan Bersalah Secara Aklamasi!');
+        
+        applyStatEffects({ authority: +20, coldness: +10, empathy: +10 });
+        
+        setTimeout(() => {
+          deactivateDebateBattle();
+          jumpToScene('scene4');
+        }, 2200);
+        return;
+      }
+
+      // Check Next Round
+      if (State.debate.dionHp <= 66 && State.debate.round === 1) {
+        State.debate.round = 2;
+        audio.playChime();
+        showToast('Ronde 2: Dion beralih menyalahkan Seraphina!');
+      } else if (State.debate.dionHp <= 33 && State.debate.round === 2) {
+        State.debate.round = 3;
+        audio.playChime();
+        showToast('Ronde 3: Dion melancarkan ancaman patronase yayasan!');
+      }
+
+      // Dion counter-attack if not stunned
+      if (!State.debate.isDionStunned) {
+        setTimeout(() => {
+          const counterDmg = 12;
+          State.debate.kaelHp = Math.max(10, State.debate.kaelHp - counterDmg);
+          updateDebateBattleUI();
+        }, 800);
+      } else {
+        State.debate.isDionStunned = false; // Reset stun
+      }
+    }
+
+    /* =========================================================================
+       11. MODAL HANDLERS & BACKLOG
        ========================================================================= */
     function updateBacklogUI() {
       const container = document.getElementById('backlogContent');
@@ -2242,7 +2770,6 @@
       container.scrollTop = container.scrollHeight;
     }
 
-    // Modal Toggles
     const modalLedger = document.getElementById('modalLedger');
     const drawerContent = document.getElementById('drawerLedgerContent');
     const modalCodex = document.getElementById('modalCodex');
@@ -2287,7 +2814,6 @@
       modalSceneJump.classList.add('opacity-0', 'pointer-events-none');
     }
 
-    // Audio Mute Toggle
     document.getElementById('btnToggleAudio').onclick = () => {
       const isMuted = audio.toggleMute();
       document.getElementById('audioIconOn').classList.toggle('hidden', isMuted);
@@ -2295,7 +2821,6 @@
       showToast(isMuted ? 'Audio Dimatikan' : 'Audio Dihidupkan');
     };
 
-    // Auto Play & Skip
     document.getElementById('btnAutoPlay').onclick = (e) => {
       e.stopPropagation();
       State.autoPlay = !State.autoPlay;
@@ -2313,11 +2838,14 @@
     document.getElementById('dialogueClickArea').onclick = advanceDialogue;
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' || e.code === 'Enter') {
-        advanceDialogue();
+        if (!State.debate.active && State.actionPoints > 0 && document.getElementById('campusMapScreen').classList.contains('opacity-100')) {
+          // In map mode, enter doesn't trigger advance
+        } else if (!State.debate.active) {
+          advanceDialogue();
+        }
       }
     });
 
-    // Start Game from Title Screen
     document.getElementById('btnStartGame').onclick = () => {
       audio.init();
       audio.playChime();
@@ -2330,7 +2858,7 @@
     };
 
     /* =========================================================================
-       10. CHAPTER 1 ENDING REPORT (Evaluasi Temperatur Batin)
+       12. CHAPTER 1 ENDING REPORT (Evaluasi Temperatur Batin)
        ========================================================================= */
     function showEndingReport() {
       audio.playGlassShatter();
@@ -2346,22 +2874,21 @@
 
       if (State.coldness >= 75 || State.leverageBurnt) {
         titleEl.innerText = 'ARCHITECT OF ABSOLUTE ZERO';
-        descEl.innerText = 'Kaelen Vance telah melepaskan seluruh keraguan moral. Dion hancur tanpa ampun, dan Menara Gading bertekuk lutut di hadapan audit es. Jalan menuju penebusan lembut tertutup, tapi otoritasmu mutlak.';
+        descEl.innerText = 'Kaelen Vance telah melepaskan seluruh keraguan moral. Dion hancur tanpa ampun pada sidang Jumat, dan Menara Gading bertekuk lutut di hadapan audit es. Jalan menuju penebusan lembut tertutup, tapi otoritasmu mutlak.';
         tempEl.innerText = '-22°C';
         stateEl.innerText = 'Beku Total';
       } else if (State.coldness >= 50 && State.empathy >= 40) {
         titleEl.innerText = 'SOVEREIGN OF TEMPERED GLASS';
-        descEl.innerText = 'Keseimbangan langka antara kalkulasi bedah dan kepekaan manusia. Kamu memojokkan Dion tanpa meremukkan jiwa Aurelia atau Sera. Menara Gading kini melihatmu sebagai pembaharu yang adil.';
+        descEl.innerText = 'Keseimbangan langka antara kalkulasi bedah dan kepekaan manusia. Kamu memojokkan Dion pada sidang pleno tanpa meremukkan jiwa Aurelia atau Sera. Menara Gading kini melihatmu sebagai pembaharu yang adil.';
         tempEl.innerText = '12°C';
         stateEl.innerText = 'Teruji & Seimbang';
       } else {
         titleEl.innerText = 'UNARMORED HEART';
-        descEl.innerText = 'Kaelen menolak menjadi monster seperti mereka yang dulu menjatuhkannya. Menara Gading masih menyimpan ancaman, namun suaka emosional bersama Nadine dan aliansi rahasia menjadi benteng terkuatmu.';
+        descEl.innerText = 'Kaelen menolak menjadi monster seperti mereka yang dulu menjatuhkannya. Menara Gading masih menyimpan intrik, namun suaka emosional bersama Nadine dan aliansi rahasia menjadi benteng terkuatmu.';
         tempEl.innerText = '24°C';
         stateEl.innerText = 'Hangat & Terbuka';
       }
 
-      // Heroine summaries
       const feedbackEl = document.getElementById('reportHeroineFeedback');
       feedbackEl.innerHTML = `
         <div class="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
@@ -2376,6 +2903,10 @@
           <span>Nadine Larasati:</span>
           <span class="text-emerald-300 font-bold">${State.affection.nadine >= 65 ? 'Jangkar Jiwa Terikat' : 'Penjaga Arsip Terpercaya'}</span>
         </div>
+        <div class="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
+          <span>Sidang Dewan Jumat:</span>
+          <span class="text-purple-300 font-bold">${State.hasEvidence4 ? 'Skakmat Penuh Konsorsium [BUKTI 04]' : 'Kemenangan Audit Forensik'}</span>
+        </div>
       `;
 
       modalEnding.classList.remove('opacity-0', 'pointer-events-none');
@@ -2383,7 +2914,7 @@
 
     function closeEndingReport() {
       modalEnding.classList.add('opacity-0', 'pointer-events-none');
-      showToast('Data Chapter 1 Tersimpan. Bersiap untuk Bab 2!');
+      showToast('Data Audit Tersimpan!');
     }
 
     function restartGame() {
@@ -2395,13 +2926,16 @@
       State.currentSceneId = 'scene1';
       State.currentNodeIndex = 0;
       State.leverageBurnt = false;
+      State.hasEvidence4 = false;
+      State.actionPoints = 3;
+      deactivateCampusMap();
+      deactivateDebateBattle();
       modalEnding.classList.add('opacity-0', 'pointer-events-none');
       updateHUD();
       renderCurrentDialogue();
       showToast('Sidang Diulang dari Titik Awal');
     }
 
-    // Initialize Codex & HUD on load
     initCodexAvatars();
     updateHUD();
   </script>
