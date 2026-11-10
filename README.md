@@ -1,6 +1,10 @@
 # GLASS CORONATION: Titik Beku di Bawah Menara Gading
 
+[![Play Online](https://img.shields.io/badge/PLAY%20LIVE-GitHub%20Pages-blue?style=for-the-badge&logo=github)](https://ryn-debugging.github.io/romance-testing/)
+
 Sebuah game web **Visual Novel & Social-Strategy RPG** interaktif dengan estetika **Dark Academia x Frosted Glassmorphism**, dibangun dengan teknologi web native (HTML5, CSS3, Vanilla JS, Web Audio API, SVG procedural sprites, dan HTML5 Canvas).
+
+🔗 **Live Public Deployment:** [https://ryn-debugging.github.io/romance-testing/](https://ryn-debugging.github.io/romance-testing/)
 
 ---
 
@@ -89,5 +93,8 @@ Enam bulan lalu, **Kaelen Vance (Kael)** dikorbankan demi menyelamatkan reputasi
 
 ---
 
-## 🚀 Cara Menjalankan Game
-Buka file `index.html` langsung di peramban web modern apa pun (Chrome, Firefox, Safari, Edge). Tidak memerlukan server backend atau instalasi dependensi tambahan.
+## 🚀 Cara Memainkan Game
+1. **Main Langsung Online (GitHub Pages):**
+   Kunjungi [https://ryn-debugging.github.io/romance-testing/](https://ryn-debugging.github.io/romance-testing/)
+2. **Main Offline Lokal:**
+   Buka file `index.html` langsung di peramban web modern apa pun (Chrome, Firefox, Safari, Edge). Tidak memerlukan instalasi dependensi tambahan.
